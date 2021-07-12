@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "eid": {
+      "type": "string"
+    },
+    "balance_updates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "details": {
+      "type": "object",
+      "properties": {
+        "oid": {
+          "type": "string"
+        },
+        "tid": {
+          "type": "integer"
+        }
+      }
+    },
+    "operation": {
+      "type": "string"
+    }
+  }
+}

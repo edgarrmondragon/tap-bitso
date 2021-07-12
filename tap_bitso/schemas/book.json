@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "The root schema",
+  "description": "The root schema comprises the entire JSON document.",
+  "default": {},
+  "examples": [
+    {
+      "book": "btc_mxn",
+      "minimum_amount": ".003",
+      "maximum_amount": "1000.00",
+      "minimum_price": "100.00",
+      "maximum_price": "1000000.00",
+      "minimum_value": "25.00",
+      "maximum_value": "1000000.00"
+    }
+  ],
+  "required": [
+    "book",
+    "minimum_amount",
+    "maximum_amount",
+    "minimum_price",
+    "maximum_price",
+    "minimum_value",
+    "maximum_value"
+  ],
+  "properties": {
+    "book": {
+      "$id": "#/properties/book",
+      "type": "string",
+      "title": "The book schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "btc_mxn"
+      ]
+    },
+    "minimum_amount": {
+      "$id": "#/properties/minimum_amount",
+      "type": "string",
+      "title": "The minimum_amount schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        ".003"
+      ]
+    },
+    "maximum_amount": {
+      "$id": "#/properties/maximum_amount",
+      "type": "string",
+      "title": "The maximum_amount schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "1000.00"
+      ]
+    },
+    "minimum_price": {
+      "$id": "#/properties/minimum_price",
+      "type": "string",
+      "title": "The minimum_price schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "100.00"
+      ]
+    },
+    "maximum_price": {
+      "$id": "#/properties/maximum_price",
+      "type": "string",
+      "title": "The maximum_price schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "1000000.00"
+      ]
+    },
+    "minimum_value": {
+      "$id": "#/properties/minimum_value",
+      "type": "string",
+      "title": "The minimum_value schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "25.00"
+      ]
+    },
+    "maximum_value": {
+      "$id": "#/properties/maximum_value",
+      "type": "string",
+      "title": "The maximum_value schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "1000000.00"
+      ]
+    }
+  },
+  "additionalProperties": true
+}

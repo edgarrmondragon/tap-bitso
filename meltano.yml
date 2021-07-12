@@ -1,0 +1,41 @@
+version: 1
+send_anonymous_usage_stats: true
+project_id: 2e2d28c2-b095-47e1-9804-ac713c722466
+plugins:
+  extractors:
+  - name: tap-bitso
+    namespace: bitso
+    executable: ./tap-bitso.sh
+    capabilities:
+    - state
+    - catalog
+    - discover
+    settings:
+    - name: key
+      kind: password
+    - name: secret
+      kind: password
+    - name: base_url
+      value: https://api.bitso.com
+    - name: books
+      kind: array
+    select_filter:
+    # TODO: Not supported yet because of rate limit
+    - "!trades"
+  loaders:
+  - name: target-jsonl
+    variant: andyh1203
+    pip_url: target-jsonl
+
+  - name: target-sqlite
+    variant: meltano
+    config:
+      database: ${MELTANO_EXTRACT__LOAD_SCHEMA}.db
+      batch_size: 10000
+
+  - name: target-postgres
+    variant: transferwise
+    config:
+      default_target_schema: raw_${MELTANO_EXTRACT__LOAD_SCHEMA}
+      before_run_sql: CREATE SCHEMA IF NOT EXISTS raw_${MELTANO_EXTRACT__LOAD_SCHEMA};
+      max_batch_rows: 10000
