@@ -20,7 +20,8 @@ class TradesStream(PaginatedBitsoStream):
     """Trades stream."""
 
     name = "trades"
-    path = "/v3/trades/?book=btc_mxn"
+    path = "/v3/trades"
+    book_based = True
     replication_key = "tid"
     schema_filepath = SCHEMAS_DIR / "trade.json"
 
@@ -52,13 +53,3 @@ class BooksStream(BitsoStream):
     path = "/v3/available_books/"
     primary_keys = ["book"]
     schema_filepath = SCHEMAS_DIR / "book.json"
-
-
-# class TickersStream(BitsoStream):
-#     """Tickers stream."""
-
-#     name = "tickers"
-#     path = "/v3/ticker/?book=btc_mxn"
-#     primary_keys = ["book", "created_at"]
-#     schema_filepath = SCHEMAS_DIR / "ticker.json"
-#     records_jsonpath = "$.payload"

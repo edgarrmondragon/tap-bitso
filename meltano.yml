@@ -31,7 +31,7 @@ plugins:
     variant: meltano
     config:
       database: ${MELTANO_EXTRACT__LOAD_SCHEMA}.db
-      batch_size: 10000
+      batch_size: 500
 
   - name: target-postgres
     variant: transferwise
