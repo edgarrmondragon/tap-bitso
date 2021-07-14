@@ -29,7 +29,7 @@
           "type": ["string", "null"]
         },
         "tid": {
-          "type": "integer"
+          "type": ["integer", "null"]
         }
       }
     },
