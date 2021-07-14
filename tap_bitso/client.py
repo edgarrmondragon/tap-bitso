@@ -1,15 +1,21 @@
 """REST client handling, including BitsoStream base class."""
 
+import logging
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Union
+from typing import Any, Dict, List, Optional
 from urllib.parse import urlencode
 
 import requests
 from singer_sdk.streams import RESTStream
+from tenacity import retry
+from tenacity.after import after_log
+from tenacity.retry import retry_if_exception_type
+from tenacity.wait import wait_exponential
 
 from tap_bitso.auth import BitsoAuthenticator
 
 SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
+logger = logging.getLogger(__name__)
 
 
 class BitsoStream(RESTStream):
@@ -84,6 +90,49 @@ class BitsoStream(RESTStream):
         """Return a list of partition key dicts (if applicable), otherwise None."""
         if self.book_based:
             return [{"book": book} for book in self.config["books"]]
+
+    def _validate_response(self, response: requests.Response):
+        """Raise an error if the response contains an error code."""
+        if response.status_code in [401, 403]:
+            self.logger.info("Failed request for {}".format(response.url))
+            self.logger.info(
+                f"Reason: {response.status_code} - {str(response.content)}"
+            )
+            raise RuntimeError(
+                "Requested resource was unauthorized, forbidden, or not found."
+            )
+        elif response.status_code >= 400:
+            raise RuntimeError(
+                f"Error making request to API: {response.url} "
+                f"[{response.status_code} - {str(response.content)}]".replace(
+                    "\\n", "\n"
+                )
+            )
+
+    @retry(
+        reraise=True,
+        wait=wait_exponential(multiplier=1, min=5, max=60),
+        retry=retry_if_exception_type(RuntimeError),
+        after=after_log(logger, logging.INFO),
+    )
+    def _request_with_backoff(
+        self, prepared_request, context: Optional[dict]
+    ) -> requests.Response:
+        response = self.requests_session.send(prepared_request)
+        if self._LOG_REQUEST_METRICS:
+            extra_tags = {}
+            if self._LOG_REQUEST_METRIC_URLS:
+                extra_tags["url"] = prepared_request.path_url
+            self._write_request_duration_log(
+                endpoint=self.path,
+                response=response,
+                context=context,
+                extra_tags=extra_tags,
+            )
+        self._validate_response(response)
+
+        logging.debug("Response received successfully.")
+        return response
 
 
 class PaginatedBitsoStream(BitsoStream):
