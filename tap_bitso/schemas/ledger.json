@@ -26,11 +26,92 @@
     "details": {
       "type": "object",
       "properties": {
-        "oid": {
-          "type": ["string", "null"]
-        },
         "tid": {
-          "type": ["integer", "null"]
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "fid": {
+          "type": "string",
+          "title": "The fid schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "31c9933e892aed075ce3bd7620faf1bc"
+          ]
+        },
+        "asset": {
+          "type": "string",
+          "title": "The asset schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "mxn"
+          ]
+        },
+        "method": {
+          "type": "string",
+          "title": "The method schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "sp"
+          ]
+        },
+        "network": {
+          "type": "string",
+          "title": "The network schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "spei"
+          ]
+        },
+        "protocol": {
+          "type": "string",
+          "title": "The protocol schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "clabe"
+          ]
+        },
+        "integration": {
+          "type": "string",
+          "title": "The integration schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "stp"
+          ]
+        },
+        "method_name": {
+          "type": "string",
+          "title": "The method_name schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "SPEI Transfer"
+          ]
+        },
+        "oid": {
+          "type": "string",
+          "title": "The oid schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "ffKrqpCbL8H7CvEy"
+          ]
+        },
+        "qid": {
+          "type": "string",
+          "title": "The qid schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "kEFa1r4U"
+          ]
         }
       }
     },
