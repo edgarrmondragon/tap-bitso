@@ -26,7 +26,7 @@
       "type": "object",
       "properties": {
         "oid": {
-          "type": "string"
+          "type": ["string", "null"]
         },
         "tid": {
           "type": "integer"

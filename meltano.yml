@@ -20,7 +20,6 @@ plugins:
     - name: books
       kind: array
     select_filter:
-    # TODO: Not supported yet because of rate limit
     - "!trades"
   loaders:
   - name: target-jsonl
