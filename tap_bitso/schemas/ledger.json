@@ -20,7 +20,8 @@
       }
     },
     "created_at": {
-      "type": "string"
+      "type": "string",
+      "format": "date-time"
     },
     "details": {
       "type": "object",

@@ -37,6 +37,7 @@
     "created_at": {
       "$id": "#/properties/created_at",
       "type": "string",
+      "format": "date-time",
       "title": "The created_at schema",
       "description": "An explanation about the purpose of this instance.",
       "default": "",
