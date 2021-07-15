@@ -51,5 +51,6 @@ class BooksStream(BitsoStream):
 
     name = "books"
     path = "/v3/available_books/"
+    records_jsonpath = "$.payload"
     primary_keys = ["book"]
     schema_filepath = SCHEMAS_DIR / "book.json"
