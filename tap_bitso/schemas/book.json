@@ -317,60 +317,55 @@
           "additionalItems": true,
           "items": {
             "$id": "#/properties/fees/properties/structure/items",
-            "anyOf": [
+            "type": "object",
+            "title": "The first anyOf schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
               {
-                "$id": "#/properties/fees/properties/structure/items/anyOf/0",
-                "type": "object",
-                "title": "The first anyOf schema",
-                "description": "An explanation about the purpose of this instance.",
-                "default": {},
-                "examples": [
-                  {
-                    "volume": "1500000",
-                    "maker": "0.00500",
-                    "taker": "0.00650"
-                  }
-                ],
-                "required": [
-                  "volume",
-                  "maker",
-                  "taker"
-                ],
-                "properties": {
-                  "volume": {
-                    "$id": "#/properties/fees/properties/structure/items/anyOf/0/properties/volume",
-                    "type": "string",
-                    "title": "The volume schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                      "1500000"
-                    ]
-                  },
-                  "maker": {
-                    "$id": "#/properties/fees/properties/structure/items/anyOf/0/properties/maker",
-                    "type": "string",
-                    "title": "The maker schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                      "0.00500"
-                    ]
-                  },
-                  "taker": {
-                    "$id": "#/properties/fees/properties/structure/items/anyOf/0/properties/taker",
-                    "type": "string",
-                    "title": "The taker schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                      "0.00650"
-                    ]
-                  }
-                },
-                "additionalProperties": true
+                "volume": "1500000",
+                "maker": "0.00500",
+                "taker": "0.00650"
               }
-            ]
+            ],
+            "required": [
+              "volume",
+              "maker",
+              "taker"
+            ],
+            "properties": {
+              "volume": {
+                "$id": "#/properties/fees/properties/structure/items/properties/volume",
+                "type": "string",
+                "title": "The volume schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": "",
+                "examples": [
+                  "1500000"
+                ]
+              },
+              "maker": {
+                "$id": "#/properties/fees/properties/structure/items/properties/maker",
+                "type": "string",
+                "title": "The maker schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": "",
+                "examples": [
+                  "0.00500"
+                ]
+              },
+              "taker": {
+                "$id": "#/properties/fees/properties/structure/items/properties/taker",
+                "type": "string",
+                "title": "The taker schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": "",
+                "examples": [
+                  "0.00650"
+                ]
+              }
+            },
+            "additionalProperties": true
           }
         }
       },
