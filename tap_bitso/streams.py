@@ -42,6 +42,7 @@ class TickersStream(BitsoStream):
     name = "tickers"
     path = "/v3/ticker"
     book_based = True
+    records_jsonpath = "$.payload"
     primary_keys = ["book", "created_at"]
     schema_filepath = SCHEMAS_DIR / "ticker.json"
 
@@ -51,6 +52,5 @@ class BooksStream(BitsoStream):
 
     name = "books"
     path = "/v3/available_books/"
-    records_jsonpath = "$.payload"
     primary_keys = ["book"]
     schema_filepath = SCHEMAS_DIR / "book.json"
