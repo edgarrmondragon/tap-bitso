@@ -8,12 +8,71 @@
   "examples": [
     {
       "book": "btc_mxn",
-      "minimum_amount": ".003",
-      "maximum_amount": "1000.00",
-      "minimum_price": "100.00",
-      "maximum_price": "1000000.00",
-      "minimum_value": "25.00",
-      "maximum_value": "1000000.00"
+      "tick_size": "0.01",
+      "default_chart": "candle",
+      "fees": {
+        "flat_rate": {
+          "maker": "0.500",
+          "taker": "0.650"
+        },
+        "structure": [
+          {
+            "volume": "1500000",
+            "maker": "0.00500",
+            "taker": "0.00650"
+          },
+          {
+            "volume": "2000000",
+            "maker": "0.00490",
+            "taker": "0.00637"
+          },
+          {
+            "volume": "5000000",
+            "maker": "0.00480",
+            "taker": "0.00624"
+          },
+          {
+            "volume": "7000000",
+            "maker": "0.00440",
+            "taker": "0.00572"
+          },
+          {
+            "volume": "10000000",
+            "maker": "0.00420",
+            "taker": "0.00546"
+          },
+          {
+            "volume": "15000000",
+            "maker": "0.00400",
+            "taker": "0.00520"
+          },
+          {
+            "volume": "35000000",
+            "maker": "0.00370",
+            "taker": "0.00481"
+          },
+          {
+            "volume": "50000000",
+            "maker": "0.00300",
+            "taker": "0.00390"
+          },
+          {
+            "volume": "150000000",
+            "maker": "0.00200",
+            "taker": "0.00260"
+          },
+          {
+            "volume": "250000000",
+            "maker": "0.00100",
+            "taker": "0.00130"
+          },
+          {
+            "volume": "9999999999",
+            "maker": "0.00000",
+            "taker": "0.00130"
+          }
+        ]
+      }
     }
   ],
   "required": [
@@ -23,7 +82,10 @@
     "minimum_price",
     "maximum_price",
     "minimum_value",
-    "maximum_value"
+    "maximum_value",
+    "tick_size",
+    "default_chart",
+    "fees"
   ],
   "properties": {
     "book": {
@@ -95,6 +157,224 @@
       "examples": [
         "1000000.00"
       ]
+    },
+    "tick_size": {
+      "$id": "#/properties/tick_size",
+      "type": "string",
+      "title": "The tick_size schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "0.01"
+      ]
+    },
+    "default_chart": {
+      "$id": "#/properties/default_chart",
+      "type": "string",
+      "title": "The default_chart schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "candle"
+      ]
+    },
+    "fees": {
+      "$id": "#/properties/fees",
+      "type": "object",
+      "title": "The fees schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": {},
+      "examples": [
+        {
+          "flat_rate": {
+            "maker": "0.500",
+            "taker": "0.650"
+          },
+          "structure": [
+            {
+              "volume": "1500000",
+              "maker": "0.00500",
+              "taker": "0.00650"
+            },
+            {
+              "volume": "2000000",
+              "maker": "0.00490",
+              "taker": "0.00637"
+            },
+            {
+              "volume": "5000000",
+              "maker": "0.00480",
+              "taker": "0.00624"
+            },
+            {
+              "volume": "7000000",
+              "maker": "0.00440",
+              "taker": "0.00572"
+            },
+            {
+              "volume": "10000000",
+              "maker": "0.00420",
+              "taker": "0.00546"
+            },
+            {
+              "volume": "15000000",
+              "maker": "0.00400",
+              "taker": "0.00520"
+            },
+            {
+              "volume": "35000000",
+              "maker": "0.00370",
+              "taker": "0.00481"
+            },
+            {
+              "volume": "50000000",
+              "maker": "0.00300",
+              "taker": "0.00390"
+            },
+            {
+              "volume": "150000000",
+              "maker": "0.00200",
+              "taker": "0.00260"
+            },
+            {
+              "volume": "250000000",
+              "maker": "0.00100",
+              "taker": "0.00130"
+            },
+            {
+              "volume": "9999999999",
+              "maker": "0.00000",
+              "taker": "0.00130"
+            }
+          ]
+        }
+      ],
+      "required": [
+        "flat_rate",
+        "structure"
+      ],
+      "properties": {
+        "flat_rate": {
+          "$id": "#/properties/fees/properties/flat_rate",
+          "type": "object",
+          "title": "The flat_rate schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": {},
+          "examples": [
+            {
+              "maker": "0.500",
+              "taker": "0.650"
+            }
+          ],
+          "required": [
+            "maker",
+            "taker"
+          ],
+          "properties": {
+            "maker": {
+              "$id": "#/properties/fees/properties/flat_rate/properties/maker",
+              "type": "string",
+              "title": "The maker schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "0.500"
+              ]
+            },
+            "taker": {
+              "$id": "#/properties/fees/properties/flat_rate/properties/taker",
+              "type": "string",
+              "title": "The taker schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "0.650"
+              ]
+            }
+          },
+          "additionalProperties": true
+        },
+        "structure": {
+          "$id": "#/properties/fees/properties/structure",
+          "type": "array",
+          "title": "The structure schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": [],
+          "examples": [
+            [
+              {
+                "volume": "1500000",
+                "maker": "0.00500",
+                "taker": "0.00650"
+              },
+              {
+                "volume": "2000000",
+                "maker": "0.00490",
+                "taker": "0.00637"
+              }
+            ]
+          ],
+          "additionalItems": true,
+          "items": {
+            "$id": "#/properties/fees/properties/structure/items",
+            "anyOf": [
+              {
+                "$id": "#/properties/fees/properties/structure/items/anyOf/0",
+                "type": "object",
+                "title": "The first anyOf schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": {},
+                "examples": [
+                  {
+                    "volume": "1500000",
+                    "maker": "0.00500",
+                    "taker": "0.00650"
+                  }
+                ],
+                "required": [
+                  "volume",
+                  "maker",
+                  "taker"
+                ],
+                "properties": {
+                  "volume": {
+                    "$id": "#/properties/fees/properties/structure/items/anyOf/0/properties/volume",
+                    "type": "string",
+                    "title": "The volume schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                      "1500000"
+                    ]
+                  },
+                  "maker": {
+                    "$id": "#/properties/fees/properties/structure/items/anyOf/0/properties/maker",
+                    "type": "string",
+                    "title": "The maker schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                      "0.00500"
+                    ]
+                  },
+                  "taker": {
+                    "$id": "#/properties/fees/properties/structure/items/anyOf/0/properties/taker",
+                    "type": "string",
+                    "title": "The taker schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                      "0.00650"
+                    ]
+                  }
+                },
+                "additionalProperties": true
+              }
+            ]
+          }
+        }
+      },
+      "additionalProperties": true
     }
   },
   "additionalProperties": true
