@@ -23,7 +23,8 @@ pre_chain = [
     timestamper,
 ]
 
-logging.config.dictConfig({
+logging.config.dictConfig(
+    {
         "version": 1,
         "disable_existing_loggers": False,
         "formatters": {
@@ -56,8 +57,9 @@ logging.config.dictConfig({
                 "level": "INFO",
                 "propagate": True,
             },
-        }
-})
+        },
+    }
+)
 
 structlog.configure(
     processors=[
@@ -92,6 +94,7 @@ class BitsoStream(RESTStream):
             url=self.url_base,
             stream=self.name,
         )
+
     @property
     def url_base(self) -> str:
         """Get base URL for the Bitso API from config."""
