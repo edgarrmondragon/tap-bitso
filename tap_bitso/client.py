@@ -3,19 +3,81 @@
 import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-from urllib.parse import urlencode
 
 import requests
+import structlog
 from singer_sdk.streams import RESTStream
+from singer_sdk.tap_base import Tap
+from structlog import get_logger
 from tenacity import retry
-from tenacity.after import after_log
 from tenacity.retry import retry_if_exception_type
 from tenacity.wait import wait_exponential
 
 from tap_bitso.auth import BitsoAuthenticator
 
 SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
-logger = logging.getLogger(__name__)
+
+timestamper = structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S")
+pre_chain = [
+    structlog.stdlib.add_log_level,
+    timestamper,
+]
+
+logging.config.dictConfig(
+    {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "json": {
+                "()": structlog.stdlib.ProcessorFormatter,
+                "processor": structlog.processors.JSONRenderer(),
+                "foreign_pre_chain": pre_chain,
+            },
+            "colored": {
+                "()": structlog.stdlib.ProcessorFormatter,
+                "processor": structlog.dev.ConsoleRenderer(colors=True),
+                "foreign_pre_chain": pre_chain,
+            },
+        },
+        "handlers": {
+            "default": {
+                "level": "DEBUG",
+                "class": "logging.StreamHandler",
+                "formatter": "colored",
+            },
+            "json": {
+                "level": "DEBUG",
+                "class": "logging.StreamHandler",
+                "formatter": "json",
+            },
+        },
+        "loggers": {
+            "": {
+                "handlers": ["default"],
+                "level": "INFO",
+                "propagate": True,
+            },
+        },
+    }
+)
+
+structlog.configure(
+    processors=[
+        structlog.stdlib.add_log_level,
+        structlog.stdlib.PositionalArgumentsFormatter(),
+        timestamper,
+        structlog.processors.StackInfoRenderer(),
+        structlog.processors.format_exc_info,
+        structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+    ],
+    logger_factory=structlog.stdlib.LoggerFactory(),
+    wrapper_class=structlog.stdlib.BoundLogger,
+    cache_logger_on_first_use=True,
+)
+
+
+class RetriableAPIError(Exception):
+    pass
 
 
 class BitsoStream(RESTStream):
@@ -23,6 +85,15 @@ class BitsoStream(RESTStream):
 
     records_jsonpath = "$.payload[*]"
     book_based = False
+    retry_codes = {400}
+
+    def __init__(self, tap: Tap, *args, **kwargs):
+        super().__init__(tap, *args, **kwargs)
+        self._log: structlog.stdlib.BoundLogger = get_logger(
+            tap=tap,
+            url=self.url_base,
+            stream=self.name,
+        )
 
     @property
     def url_base(self) -> str:
@@ -32,6 +103,7 @@ class BitsoStream(RESTStream):
     @property
     def authenticator(self) -> BitsoAuthenticator:
         """Return a new authenticator object."""
+        self._log.debug("Authentication")
         return BitsoAuthenticator.create_for_stream(self)
 
     @property
@@ -91,33 +163,27 @@ class BitsoStream(RESTStream):
         if self.book_based:
             return [{"book": book} for book in self.config["books"]]
 
-    def _validate_response(self, response: requests.Response):
+    def _retry_request(self, response: requests.Response):
         """Raise an error if the response contains an error code."""
-        if response.status_code in [401, 403]:
-            self.logger.info("Failed request for {}".format(response.url))
-            self.logger.info(
-                f"Reason: {response.status_code} - {str(response.content)}"
+        if response.status_code in self.retry_codes:
+            self._log.debug(
+                "Failed request",
+                status_code=response.status_code,
+                content=response.content,
             )
-            raise RuntimeError(
-                "Requested resource was unauthorized, forbidden, or not found."
-            )
-        elif response.status_code >= 400:
-            raise RuntimeError(
-                f"Error making request to API: {response.url} "
-                f"[{response.status_code} - {str(response.content)}]".replace(
-                    "\\n", "\n"
-                )
-            )
+            raise RetriableAPIError("Request failed. Retrying.")
+        else:
+            response.raise_for_status()
 
     @retry(
         reraise=True,
-        wait=wait_exponential(multiplier=1, min=5, max=60),
-        retry=retry_if_exception_type(RuntimeError),
-        after=after_log(logger, logging.INFO),
+        wait=wait_exponential(multiplier=5, min=5, max=60),
+        retry=retry_if_exception_type(RetriableAPIError),
     )
     def _request_with_backoff(
-        self, prepared_request, context: Optional[dict]
+        self, prepared_request: requests.PreparedRequest, context: Optional[dict]
     ) -> requests.Response:
+        self._log.debug("HTTP Request", path=self.path)
         response = self.requests_session.send(prepared_request)
         if self._LOG_REQUEST_METRICS:
             extra_tags = {}
@@ -129,9 +195,9 @@ class BitsoStream(RESTStream):
                 context=context,
                 extra_tags=extra_tags,
             )
-        self._validate_response(response)
+        self._retry_request(response)
 
-        logging.debug("Response received successfully.")
+        self._log.debug("Response received successfully")
         return response
 
 
