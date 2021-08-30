@@ -111,7 +111,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 name = "colorama"
 version = "0.4.4"
 description = "Cross-platform colored terminal text."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
@@ -629,7 +629,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "<3.9,>=3.6.2"
-content-hash = "c431749fb82eaa9762e79f589aeefe22e87fcab2631e3c2ee6fed29cce5f88a9"
+content-hash = "ef4cecd0cd656b6c570915a2f843018b9aa6f9c239f4d1192f0840770b81c981"
 
 [metadata.files]
 appdirs = [
