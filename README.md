@@ -1,5 +1,7 @@
 # tap-bitso
 
+⚠️ Warning: this project is under active development, essential features are still missing and implementation subject to change. ⚠️
+
 `tap-bitso` is a Singer tap for Bitso.
 
 Built with the Meltano [SDK](https://gitlab.com/meltano/sdk) for Singer Taps.
