@@ -143,7 +143,9 @@ class BitsoStream(RESTStream):
         )
         return prepared_request
 
-    def get_next_page_token(self, response: requests.Response, previous_token: Optional[Any]) -> Any:
+    def get_next_page_token(
+        self, response: requests.Response, previous_token: Optional[Any]
+    ) -> Any:
         token = super().get_next_page_token(response, previous_token)
         self._log.debug("New page token", token=token)
         return token
