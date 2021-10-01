@@ -61,20 +61,6 @@ logging.config.dictConfig(
     }
 )
 
-structlog.configure(
-    processors=[
-        structlog.stdlib.add_log_level,
-        structlog.stdlib.PositionalArgumentsFormatter(),
-        timestamper,
-        structlog.processors.StackInfoRenderer(),
-        structlog.processors.format_exc_info,
-        structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
-    ],
-    logger_factory=structlog.stdlib.LoggerFactory(),
-    wrapper_class=structlog.stdlib.BoundLogger,
-    cache_logger_on_first_use=True,
-)
-
 
 class RetriableAPIError(Exception):
     pass
@@ -156,6 +142,11 @@ class BitsoStream(RESTStream):
             self.requests_session.prepare_request(request)
         )
         return prepared_request
+
+    def get_next_page_token(self, response: requests.Response, previous_token: Optional[Any]) -> Any:
+        token = super().get_next_page_token(response, previous_token)
+        self._log.debug("New page token", token=token)
+        return token
 
     @property
     def partitions(self) -> Optional[List[dict]]:
