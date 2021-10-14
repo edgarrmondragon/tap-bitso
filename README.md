@@ -55,6 +55,7 @@ pipx install poetry
 poetry install
 ```
 
+<!--
 ### Create and Run Tests
 
 Create tests within the `tap_bitso/tests` subfolder and
@@ -69,6 +70,7 @@ You can also test the `tap-bitso` CLI interface directly using `poetry run`:
 ```bash
 poetry run tap-bitso --help
 ```
+-->
 
 ### Testing with [Meltano](https://www.meltano.com)
 
