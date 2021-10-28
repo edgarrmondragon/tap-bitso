@@ -6,9 +6,6 @@ from typing import Any, Dict, List, Optional
 import requests
 from singer_sdk.streams import RESTStream
 from structlog.contextvars import bind_contextvars
-from tenacity import retry
-from tenacity.retry import retry_if_exception_type
-from tenacity.wait import wait_exponential
 
 from tap_bitso.auth import BitsoAuthenticator
 
@@ -105,42 +102,16 @@ class BitsoStream(RESTStream):
         if self.book_based:
             return [{"book": book} for book in self.config["books"]]
 
-    def _retry_request(self, response: requests.Response):
-        """Raise an error if the response contains an error code."""
+    def validate_response(self, response: requests.Response) -> None:
         if response.status_code in self.retry_codes:
             self.logger.info(
                 "Failed request",
                 status_code=response.status_code,
                 content=response.content,
             )
-            raise RetriableAPIError("Request failed. Retrying.")
-        else:
-            response.raise_for_status()
+            raise RetriableAPIError("Retrying request")
 
-    @retry(
-        reraise=True,
-        wait=wait_exponential(multiplier=5, min=5, max=60),
-        retry=retry_if_exception_type(RetriableAPIError),
-    )
-    def _request_with_backoff(
-        self, prepared_request: requests.PreparedRequest, context: Optional[dict]
-    ) -> requests.Response:
-        self.logger.debug("HTTP Request", path=self.path)
-        response = self.requests_session.send(prepared_request)
-        if self._LOG_REQUEST_METRICS:
-            extra_tags = {}
-            if self._LOG_REQUEST_METRIC_URLS:
-                extra_tags["url"] = prepared_request.path_url
-            self._write_request_duration_log(
-                endpoint=self.path,
-                response=response,
-                context=context,
-                extra_tags=extra_tags,
-            )
-        self._retry_request(response)
-
-        self.logger.debug("Response received successfully")
-        return response
+        super().validate_response(response)
 
 
 class PaginatedBitsoStream(BitsoStream):
