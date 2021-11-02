@@ -135,7 +135,7 @@ test = ["pytest (>=6.0)", "pytest-cov", "pytest-subtests", "pytest-xdist", "pret
 name = "dataclasses"
 version = "0.8"
 description = "A backport of the dataclasses module for Python 3.6"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6, <3.7"
 
@@ -504,7 +504,7 @@ python-versions = "*"
 
 [[package]]
 name = "singer-sdk"
-version = "0.3.11"
+version = "0.3.13"
 description = "A framework for building Singer taps"
 category = "main"
 optional = false
@@ -514,6 +514,7 @@ python-versions = ">=3.6.2,<3.10"
 backoff = ">=1.8.0,<2.0"
 click = ">=8.0,<9.0"
 cryptography = ">=3.4.6,<4.0.0"
+dataclasses = {version = "*", markers = "python_version < \"3.7\""}
 importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
 inflection = ">=0.5.1,<0.6.0"
 joblib = ">=1.0.1,<2.0.0"
@@ -630,7 +631,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "<3.10,>=3.6.2"
-content-hash = "66396e28db0863ddde014dba4231b27135f1c76c20aea24bc9ff43e18d1cfcef"
+content-hash = "c5f0418167ae356f0d2a72e3199ad6c3862f11be3ade82e21e7dcf5b1f884db3"
 
 [metadata.files]
 atomicwrites = [
@@ -983,8 +984,8 @@ simplejson = [
     {file = "simplejson-3.11.1.win32-py3.5.exe", hash = "sha256:c76d55d78dc8b06c96fd08c6cc5e2b0b650799627d3f9ca4ad23f40db72d5f6d"},
 ]
 singer-sdk = [
-    {file = "singer-sdk-0.3.11.tar.gz", hash = "sha256:60e72fa86cd31e3be255d30f9751ba050114e3007f234f9b82212e6736643dd9"},
-    {file = "singer_sdk-0.3.11-py3-none-any.whl", hash = "sha256:9e4c0ece54708a4a4f535d966b2528361467c7c9780a98d58623cb1b31e86b05"},
+    {file = "singer-sdk-0.3.13.tar.gz", hash = "sha256:1984f45b6fcbe92cd66f6f20da9931a2c02fb086b9530b1f6e5b719bb1cad34e"},
+    {file = "singer_sdk-0.3.13-py3-none-any.whl", hash = "sha256:695546308709541d4851bff9ff469dd0d90c583c8a2e1f8e083999194a225f75"},
 ]
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
