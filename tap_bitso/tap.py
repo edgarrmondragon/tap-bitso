@@ -1,9 +1,13 @@
 """Bitso tap class."""
 
+import logging
 from typing import List
 
+import structlog
 from singer_sdk import Stream, Tap
 from singer_sdk import typing as th
+from singer_sdk.helpers._classproperty import classproperty
+from structlog.contextvars import bind_contextvars, merge_contextvars
 
 from tap_bitso.streams import (
     BooksStream,
@@ -21,6 +25,42 @@ STREAM_TYPES = [
     TradesStream,
 ]
 
+structlog.configure(
+    processors=[
+        merge_contextvars,
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.dev.ConsoleRenderer(colors=True),
+    ],
+    logger_factory=structlog.stdlib.LoggerFactory(),
+)
+
+logging.config.dictConfig(
+    {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "colored": {
+                "()": structlog.stdlib.ProcessorFormatter,
+                "processor": structlog.dev.ConsoleRenderer(colors=True),
+            },
+        },
+        "handlers": {
+            "console": {
+                "level": "DEBUG",
+                "class": "logging.StreamHandler",
+                "formatter": "colored",
+            },
+        },
+        "loggers": {
+            "": {
+                "handlers": ["console"],
+                "level": "INFO",
+                "propagate": True,
+            },
+        },
+    }
+)
+
 
 class TapBitso(Tap):
     """Bitso tap class."""
@@ -33,6 +73,12 @@ class TapBitso(Tap):
         th.Property("base_url", th.StringType, default="https://api.bitso.com"),
         th.Property("books", th.ArrayType(th.StringType), default=["btc_mxn"]),
     ).to_dict()
+
+    @classproperty
+    def logger(cls) -> logging.Logger:
+        """Get tap logger."""
+        bind_contextvars(tap=cls.name, version=cls.plugin_version)
+        return structlog.get_logger(cls.name)
 
     def discover_streams(self) -> List[Stream]:
         """Return a list of discovered streams."""
