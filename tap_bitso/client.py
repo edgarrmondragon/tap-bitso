@@ -109,7 +109,7 @@ class BitsoStream(RESTStream):
                 status_code=response.status_code,
                 content=response.content,
             )
-            raise RetriableAPIError("Retrying request")
+            raise RetriableAPIError(response.reason)
 
         super().validate_response(response)
 
