@@ -370,15 +370,15 @@ python-versions = "*"
 
 [[package]]
 name = "py"
-version = "1.10.0"
+version = "1.11.0"
 description = "library with cross-python path, ini-parsing, io, code, log facilities"
 category = "dev"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "pycparser"
-version = "2.20"
+version = "2.21"
 description = "C parser in Python"
 category = "main"
 optional = false
@@ -516,8 +516,7 @@ version = "0.3.14"
 description = "A framework for building Singer taps"
 category = "main"
 optional = false
-python-versions = "<3.10,>=3.6.2"
-develop = true
+python-versions = ">=3.6.2,<3.10"
 
 [package.dependencies]
 backoff = ">=1.8.0,<2.0"
@@ -526,21 +525,17 @@ contextlib2 = {version = "*", markers = "python_version < \"3.7\""}
 cryptography = ">=3.4.6,<4.0.0"
 dataclasses = {version = "*", markers = "python_version < \"3.7\""}
 importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
-inflection = "^0.5.1"
-joblib = "^1.0.1"
-jsonpath-ng = "^1.5.3"
-memoization = "^0.3.2"
-pendulum = "^2.1.0"
+inflection = ">=0.5.1,<0.6.0"
+joblib = ">=1.0.1,<2.0.0"
+jsonpath-ng = ">=1.5.3,<2.0.0"
+memoization = ">=0.3.2,<0.4.0"
+pendulum = ">=2.1.0,<3.0.0"
 pipelinewise-singer-python = "1.2.0"
 PyJWT = "1.7.1"
-requests = "^2.25.1"
+requests = ">=2.25.1,<3.0.0"
 
 [package.extras]
 docs = ["sphinx (>=3.5.4,<4.0.0)", "sphinx-rtd-theme (>=0.5.2,<0.6.0)", "sphinx-copybutton (>=0.3.1,<0.4.0)", "myst-parser (>=0.14.0,<0.15.0)"]
-
-[package.source]
-type = "directory"
-url = "../sdk"
 
 [[package]]
 name = "six"
@@ -869,12 +864,12 @@ ply = [
     {file = "ply-3.11.tar.gz", hash = "sha256:00c7c1aaa88358b9c765b6d3000c6eec0ba42abca5351b095321aef446081da3"},
 ]
 py = [
-    {file = "py-1.10.0-py2.py3-none-any.whl", hash = "sha256:3b80836aa6d1feeaa108e046da6423ab8f6ceda6468545ae8d02d9d58d18818a"},
-    {file = "py-1.10.0.tar.gz", hash = "sha256:21b81bda15b66ef5e1a777a21c4dcd9c20ad3efd0b3f817e7a809035269e1bd3"},
+    {file = "py-1.11.0-py2.py3-none-any.whl", hash = "sha256:607c53218732647dff4acdfcd50cb62615cedf612e72d1724fb1a0cc6405b378"},
+    {file = "py-1.11.0.tar.gz", hash = "sha256:51c75c4126074b472f746a24399ad32f6053d1b34b68d2fa41e558e6f4a98719"},
 ]
 pycparser = [
-    {file = "pycparser-2.20-py2.py3-none-any.whl", hash = "sha256:7582ad22678f0fcd81102833f60ef8d0e57288b6b5fb00323d101be910e35705"},
-    {file = "pycparser-2.20.tar.gz", hash = "sha256:2d475327684562c3a96cc71adf7dc8c4f0565175cf86b6d7a404ff4c771f15f0"},
+    {file = "pycparser-2.21-py2.py3-none-any.whl", hash = "sha256:8ee45429555515e1f6b185e78100aea234072576aa43ab53aefcae078162fca9"},
+    {file = "pycparser-2.21.tar.gz", hash = "sha256:e644fdec12f7872f86c58ff790da456218b10f863970249516d60a5eaca77206"},
 ]
 pydocstyle = [
     {file = "pydocstyle-6.1.1-py3-none-any.whl", hash = "sha256:6987826d6775056839940041beef5c08cc7e3d71d63149b48e36727f70144dc4"},
