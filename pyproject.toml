@@ -8,7 +8,7 @@ license = "Apache 2.0"
 [tool.poetry.dependencies]
 python = "<3.10,>=3.6.2"
 requests = "^2.26.0"
-singer-sdk = {version = "^0.3.13", allow-prereleases = true}
+singer-sdk = {version = "^0.3.14", allow-prereleases = true}
 tenacity = "^8.0.1"
 structlog = "^21.2.0"
 colorama = "^0.4.4"
