@@ -2,37 +2,43 @@
 
 from pathlib import Path
 
-from tap_bitso.client import BitsoStream, PaginatedBitsoStream
+from tap_bitso.client import BitsoStream
 
 SCHEMAS_DIR = Path(__file__).parent / "./schemas"
 
 
-class LedgerStream(PaginatedBitsoStream):
+class LedgerStream(BitsoStream):
     """Ledger stream."""
 
     name = "ledger"
     path = "/v3/ledger/"
     replication_key = "eid"
+    primary_keys = ["eid"]
+    next_page_token_jsonpath = f"$.payload[-1].{replication_key}"
     schema_filepath = SCHEMAS_DIR / "ledger.json"
 
 
-class TradesStream(PaginatedBitsoStream):
+class TradesStream(BitsoStream):
     """Trades stream."""
 
     name = "trades"
     path = "/v3/trades"
     book_based = True
     replication_key = "tid"
+    primary_keys = ["tid"]
+    next_page_token_jsonpath = f"$.payload[-1].{replication_key}"
     schema_filepath = SCHEMAS_DIR / "trade.json"
 
 
-class UserTradesStream(PaginatedBitsoStream):
+class UserTradesStream(BitsoStream):
     """User trades stream."""
 
     name = "user_trades"
     path = "/v3/user_trades"
     book_based = True
     replication_key = "tid"
+    primary_keys = ["tid"]
+    next_page_token_jsonpath = f"$.payload[-1].{replication_key}"
     schema_filepath = SCHEMAS_DIR / "trade.json"
 
 

@@ -1,19 +1,17 @@
 """REST client handling, including BitsoStream base class."""
 
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, Generator, List, Optional
 
+import backoff
 import requests
+from singer_sdk.exceptions import RetriableAPIError
 from singer_sdk.streams import RESTStream
 from structlog.contextvars import bind_contextvars
 
 from tap_bitso.auth import BitsoAuthenticator
 
 SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
-
-
-class RetriableAPIError(Exception):
-    pass
 
 
 class BitsoStream(RESTStream):
@@ -23,9 +21,19 @@ class BitsoStream(RESTStream):
     book_based = False
     retry_codes = {400}
 
-    def get_records(self, context) -> None:
+    def get_records(self, context) -> Generator[dict, None, None]:
+        """Return a generator of row-type dictionary objects.
+
+        Each row emitted should be a dictionary of property names to their values.
+
+        Args:
+            context: Stream partition or context dictionary.
+
+        Yields:
+            One item per (possibly processed) record in the API.
+        """
         bind_contextvars(context=context, stream=self.name)
-        return super().get_records(context=context)
+        yield from super().get_records(context=context)
 
     @property
     def url_base(self) -> str:
@@ -56,7 +64,7 @@ class BitsoStream(RESTStream):
         if self.replication_key:
             params["limit"] = 100
             params["sort"] = "asc"
-        if self.book_based:
+        if self.book_based and context:
             params["book"] = context["book"]
         return params
 
@@ -92,6 +100,18 @@ class BitsoStream(RESTStream):
     def get_next_page_token(
         self, response: requests.Response, previous_token: Optional[Any]
     ) -> Any:
+        """Return token identifying next page or None if all records have been read.
+
+        Args:
+            response: A raw `requests.Response`_ object.
+            previous_token: Previous pagination reference.
+
+        Returns:
+            Reference value to retrieve next page.
+
+        .. _requests.Response:
+            https://docs.python-requests.org/en/latest/api/#requests.Response
+        """
         token = super().get_next_page_token(response, previous_token)
         self.logger.debug("New page token", token=token)
         return token
@@ -101,8 +121,55 @@ class BitsoStream(RESTStream):
         """Return a list of partition key dicts (if applicable), otherwise None."""
         if self.book_based:
             return [{"book": book} for book in self.config["books"]]
+        return []
+
+    def request_decorator(self, func: Callable) -> Callable:
+        """Instantiate a decorator for handling request failures.
+
+        Developers may override this method to provide custom backoff or retry
+        handling.
+
+        Args:
+            func: Function to decorate.
+
+        Returns:
+            A decorated method.
+        """
+        decorator: Callable = backoff.on_exception(
+            backoff.constant,
+            (RetriableAPIError,),
+            max_tries=60,
+            logger=self.name,
+            interval=15,
+        )(func)
+        return decorator
 
     def validate_response(self, response: requests.Response) -> None:
+        """Validate HTTP response.
+
+        By default, checks for error status codes (>400) and raises a
+        :class:`singer_sdk.exceptions.FatalAPIError`.
+
+        Tap developers are encouraged to override this method if their APIs use HTTP
+        status codes in non-conventional ways, or if they communicate errors
+        differently (e.g. in the response body).
+
+        .. image:: ../images/200.png
+
+
+        In case an error is deemed transient and can be safely retried, then this
+        method should raise an :class:`singer_sdk.exceptions.RetriableAPIError`.
+
+        Args:
+            response: A `requests.Response`_ object.
+
+        Raises:
+            FatalAPIError: If the request is not retriable.
+            RetriableAPIError: If the request is retriable.
+
+        .. _requests.Response:
+            https://docs.python-requests.org/en/latest/api/#requests.Response
+        """
         if response.status_code in self.retry_codes:
             self.logger.info(
                 "Failed request",
@@ -112,22 +179,3 @@ class BitsoStream(RESTStream):
             raise RetriableAPIError(response.reason)
 
         super().validate_response(response)
-
-
-class PaginatedBitsoStream(BitsoStream):
-    """A Bitso endpoint that requires pagination."""
-
-    @property
-    def primary_keys(self) -> List[str]:
-        """Copy primary keys from replication key."""
-        return self._primary_keys or [self.replication_key]
-
-    @primary_keys.setter
-    def primary_keys(self, value: List[str]) -> None:
-        """Update primary keys from catalog file."""
-        self._primary_keys = value
-
-    @property
-    def next_page_token_jsonpath(self) -> str:
-        """Get JSONPath for next page token using the replication key."""
-        return f"$.payload[-1].{self.replication_key}"

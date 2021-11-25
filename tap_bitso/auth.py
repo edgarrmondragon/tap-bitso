@@ -4,7 +4,7 @@ import hashlib
 import hmac
 import json
 import time
-from urllib.parse import urlencode, urlparse
+from urllib.parse import urlencode
 
 from requests import Request
 from singer_sdk.authenticators import APIAuthenticatorBase
