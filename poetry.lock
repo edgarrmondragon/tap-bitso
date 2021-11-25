@@ -555,7 +555,7 @@ python-versions = "*"
 
 [[package]]
 name = "structlog"
-version = "21.3.0"
+version = "21.4.0"
 description = "Structured Logging for Python"
 category = "main"
 optional = false
@@ -640,7 +640,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "<3.10,>=3.6.2"
-content-hash = "1a431a8837cbed6f3d147035496189aa1eb981b7bee0030ac8fd6fa3b9d2f2d1"
+content-hash = "7b62404cf8c38bdd5dea818f6fe5d35f55b67f193ee3bb36a5338a736909cd66"
 
 [metadata.files]
 atomicwrites = [
@@ -1009,8 +1009,8 @@ snowballstemmer = [
     {file = "snowballstemmer-2.1.0.tar.gz", hash = "sha256:e997baa4f2e9139951b6f4c631bad912dfd3c792467e2f03d7239464af90e914"},
 ]
 structlog = [
-    {file = "structlog-21.3.0-py3-none-any.whl", hash = "sha256:063216becff8e6f6558122a9b00734f7e50bfef309eb730c85a52c74ed861a96"},
-    {file = "structlog-21.3.0.tar.gz", hash = "sha256:4da2aec0aebf6dee7beb884eb0fda26ed9d6cce5338fcd523e8597d0f1826746"},
+    {file = "structlog-21.4.0-py3-none-any.whl", hash = "sha256:6ed8fadb27cf8362be0e606f5e79ccdd3b1e879aac65f9dc0ac3033fd013a7be"},
+    {file = "structlog-21.4.0.tar.gz", hash = "sha256:305a66201f9605a2e8a2595271a446f258175901c09c01e4c2c2a8ac5b68edf1"},
 ]
 tenacity = [
     {file = "tenacity-8.0.1-py3-none-any.whl", hash = "sha256:f78f4ea81b0fabc06728c11dc2a8c01277bfc5181b321a4770471902e3eb844a"},
