@@ -8,7 +8,7 @@ license = "Apache 2.0"
 [tool.poetry.dependencies]
 python = "<3.10,>=3.6.2"
 requests = "^2.26.0"
-singer-sdk = {version = "^0.3.16", allow-prereleases = true}
+singer-sdk = {git = "https://gitlab.com/stkbailey/singer-sdk", rev = "add_stream_test_classes"}
 structlog = "^21.4.0"
 colorama = "^0.4.4"
 setuptools = "<58.0.0"
@@ -36,6 +36,9 @@ line-length = 88
 profile = "black"
 multi_line_output = 3 # Vertical Hanging Indent
 src_paths = "tap_bitso"
+
+[tool.pytest.ini_options]
+addopts = "-vvv"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
