@@ -32,7 +32,7 @@ structlog.configure(
         structlog.stdlib.add_log_level,
         merge_contextvars,
         structlog.processors.TimeStamper(fmt="iso"),
-        structlog.dev.ConsoleRenderer(colors=True),
+        structlog.dev.ConsoleRenderer(),
     ],
     logger_factory=structlog.stdlib.LoggerFactory(),
 )
