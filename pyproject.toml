@@ -9,7 +9,7 @@ license = "Apache 2.0"
 python = "<3.10,>=3.6.2"
 requests = "==2.26.0"
 singer-sdk = "==0.3.16"
-structlog = "==21.4.0"
+structlog = "==21.5.0"
 
 [tool.poetry.dev-dependencies]
 colorama = "==0.4.4"
