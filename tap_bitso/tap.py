@@ -7,7 +7,6 @@ from typing import List
 import structlog
 from singer_sdk import Stream, Tap
 from singer_sdk import typing as th
-from structlog.contextvars import merge_contextvars
 
 from tap_bitso.streams import (
     BooksStream,
@@ -22,7 +21,7 @@ STREAM_TYPES = [
     LedgerStream,
     TickersStream,
     UserTradesStream,
-    # TradesStream,
+    TradesStream,
 ]
 
 logging.config.dictConfig(
