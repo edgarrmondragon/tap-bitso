@@ -6,8 +6,7 @@ authors = ["Edgar Ramírez Mondragón"]
 license = "Apache 2.0"
 
 [tool.poetry.dependencies]
-python = "<3.10,>=3.6.2"
-requests = "==2.26.0"
+python = "<3.11,>=3.6.2"
 singer-sdk = "==0.3.17"
 structlog = "==21.5.0"
 
