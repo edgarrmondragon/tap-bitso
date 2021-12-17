@@ -20,7 +20,7 @@ mypy = "==0.920"
 pydocstyle = "==6.1.1"
 tox = "==3.24.4"
 flake8 = "==4.0.1"
-types-requests = "==2.26.1"
+types-requests = "==2.26.2"
 
 [[tool.mypy.overrides]]
 module = [
