@@ -7,8 +7,7 @@ from typing import List
 import structlog
 from singer_sdk import Stream, Tap
 from singer_sdk import typing as th
-from singer_sdk.helpers._classproperty import classproperty
-from structlog.contextvars import bind_contextvars, merge_contextvars
+from structlog.contextvars import merge_contextvars
 
 from tap_bitso.streams import (
     BooksStream,
@@ -23,42 +22,51 @@ STREAM_TYPES = [
     LedgerStream,
     TickersStream,
     UserTradesStream,
-    TradesStream,
+    # TradesStream,
 ]
-
-structlog.configure(
-    processors=[
-        structlog.stdlib.add_logger_name,
-        structlog.stdlib.add_log_level,
-        merge_contextvars,
-        structlog.processors.TimeStamper(fmt="iso"),
-        structlog.dev.ConsoleRenderer(),
-    ],
-    logger_factory=structlog.stdlib.LoggerFactory(),
-)
 
 logging.config.dictConfig(
     {
         "version": 1,
-        "disable_existing_loggers": False,
+        "disable_existing_loggers": True,
         "formatters": {
             "colored": {
                 "()": structlog.stdlib.ProcessorFormatter,
                 "processor": structlog.dev.ConsoleRenderer(colors=True),
+                "foreign_pre_chain": [
+                    structlog.stdlib.add_log_level,
+                    structlog.processors.TimeStamper(fmt="iso"),
+                ],
+            },
+            "json": {
+                "()": structlog.stdlib.ProcessorFormatter,
+                "processor": structlog.processors.JSONRenderer(),
+                "foreign_pre_chain": [
+                    structlog.stdlib.add_logger_name,
+                    structlog.stdlib.add_log_level,
+                    structlog.processors.TimeStamper(fmt="iso"),
+                    structlog.stdlib.PositionalArgumentsFormatter(),
+                ],
             },
         },
         "handlers": {
             "console": {
-                "level": "DEBUG",
+                "level": "INFO",
                 "class": "logging.StreamHandler",
                 "formatter": "colored",
             },
+            "file": {
+                "level": "DEBUG",
+                "class": "logging.FileHandler",
+                "formatter": "json",
+                "filename": "tap.log",
+            },
         },
         "loggers": {
-            "": {
-                "handlers": ["console"],
-                "level": "INFO",
-                "propagate": True,
+            "tap-bitso": {
+                "handlers": ["console", "file"],
+                "level": "DEBUG",
+                "propagate": False,
             },
         },
     }
@@ -76,12 +84,6 @@ class TapBitso(Tap):
         th.Property("base_url", th.StringType, default="https://api.bitso.com"),
         th.Property("books", th.ArrayType(th.StringType), default=["btc_mxn"]),
     ).to_dict()
-
-    @classproperty
-    def logger(cls) -> logging.Logger:
-        """Get tap logger."""
-        bind_contextvars(tap=cls.name, version=cls.plugin_version)
-        return structlog.get_logger(cls.name)
 
     def discover_streams(self) -> List[Stream]:
         """Return a list of discovered streams."""

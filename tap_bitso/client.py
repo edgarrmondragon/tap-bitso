@@ -1,5 +1,4 @@
 """REST client handling, including BitsoStream base class."""
-
 from pathlib import Path
 from typing import Any, Callable, Dict, Generator, List, Optional
 
@@ -43,7 +42,6 @@ class BitsoStream(RESTStream):
     @property
     def authenticator(self) -> BitsoAuthenticator:
         """Return a new authenticator object."""
-        self.logger.info("Authenticating")
         return BitsoAuthenticator.create_for_stream(self)
 
     @property
@@ -113,7 +111,7 @@ class BitsoStream(RESTStream):
             https://docs.python-requests.org/en/latest/api/#requests.Response
         """
         token = super().get_next_page_token(response, previous_token)
-        self.logger.debug("New page token", token=token)
+        self.logger.debug("New page token %s", token)
         return token
 
     @property
@@ -139,7 +137,7 @@ class BitsoStream(RESTStream):
             backoff.constant,
             (RetriableAPIError,),
             max_tries=60,
-            logger=self.name,
+            logger=self.tap_name,
             interval=15,
         )(func)
         return decorator
@@ -171,11 +169,6 @@ class BitsoStream(RESTStream):
             https://docs.python-requests.org/en/latest/api/#requests.Response
         """
         if response.status_code in self.retry_codes:
-            self.logger.info(
-                "Failed request",
-                status_code=response.status_code,
-                content=response.content,
-            )
             raise RetriableAPIError(response.reason)
 
         super().validate_response(response)
