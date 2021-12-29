@@ -5,7 +5,7 @@ plugins:
   extractors:
   - name: tap-bitso
     namespace: bitso
-    executable: ./tap-bitso.sh
+    pip_url: -e .
     capabilities:
     - state
     - catalog
@@ -16,6 +16,7 @@ plugins:
     - name: secret
       kind: password
     - name: base_url
+      kind: string
       value: https://api.bitso.com
     - name: books
       kind: array
@@ -29,7 +30,7 @@ plugins:
   - name: target-sqlite
     variant: meltano
     config:
-      database: ${MELTANO_EXTRACT__LOAD_SCHEMA}.db
+      database: output/${MELTANO_EXTRACT__LOAD_SCHEMA}.db
       batch_size: 500
 
   - name: target-postgres

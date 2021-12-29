@@ -41,7 +41,7 @@ class BitsoAuthenticator(APIAuthenticatorBase):
             message.encode("utf-8"),
             hashlib.sha256,
         ).hexdigest()
-        auth_header = "Bitso %s:%s:%s" % (bitso_key, nonce, signature)
+        auth_header = f"Bitso {bitso_key}:{nonce}:{signature}"
 
         # Update request with Bitso auth
         request.headers.update({"Authorization": auth_header})
