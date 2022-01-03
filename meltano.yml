@@ -1,5 +1,5 @@
 version: 1
-send_anonymous_usage_stats: true
+send_anonymous_usage_stats: false
 project_id: 2e2d28c2-b095-47e1-9804-ac713c722466
 plugins:
   extractors:

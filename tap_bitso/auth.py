@@ -8,20 +8,34 @@ from urllib.parse import urlencode
 
 from requests import Request
 from singer_sdk.authenticators import APIAuthenticatorBase
+from singer_sdk.streams.core import Stream
 
 
 class BitsoAuthenticator(APIAuthenticatorBase):
     """Authenticator class for Bitso."""
 
     @classmethod
-    def create_for_stream(cls, stream) -> "BitsoAuthenticator":
-        """Create the authenticator for the stream."""
+    def create_for_stream(cls, stream: Stream) -> "BitsoAuthenticator":
+        """Create the authenticator for the stream.
+
+        Args:
+            stream: A Singer stream class.
+
+        Returns:
+            An authenticator instance.
+        """
         return cls(stream=stream)
 
-    def authenticate_request(self, request: Request) -> None:
+    def authenticate_request(self: "BitsoAuthenticator", request: Request) -> None:
         """Modify outgoing request with authentication data.
 
         See: https://bitso.com/api_info?python#creating-and-signing-requests
+
+        Args:
+            request: The `requests.Request`_ object.
+
+        .. _requests.Request:
+            https://docs.python-requests.org/en/latest/api/#requests.Request
         """
         bitso_key: str = self.config["key"]
         bitso_secret: str = self.config["secret"]

@@ -20,7 +20,7 @@ class BitsoStream(RESTStream):
     book_based = False
     retry_codes = {400}
 
-    def get_records(self, context) -> Generator[dict, None, None]:
+    def get_records(self, context: Optional[dict]) -> Generator[dict, None, None]:
         """Return a generator of row-type dictionary objects.
 
         Each row emitted should be a dictionary of property names to their values.
@@ -36,17 +36,29 @@ class BitsoStream(RESTStream):
 
     @property
     def url_base(self) -> str:
-        """Get base URL for the Bitso API from config."""
+        """Get base URL for the Bitso API from config.
+
+        Returns:
+            Base URL for all API requests.
+        """
         return self.config["base_url"]
 
     @property
     def authenticator(self) -> BitsoAuthenticator:
-        """Return a new authenticator object."""
+        """Return a new authenticator object.
+
+        Returns:
+            The Bitso API authenticator object.
+        """
         return BitsoAuthenticator.create_for_stream(self)
 
     @property
     def http_headers(self) -> dict:
-        """Return the http headers needed."""
+        """Return the http headers needed.
+
+        Returns:
+            A mapping of HTTP headers.
+        """
         headers = {}
         if "user_agent" in self.config:
             headers["User-Agent"] = self.config.get("user_agent")
@@ -55,7 +67,15 @@ class BitsoStream(RESTStream):
     def get_url_params(
         self, context: Optional[dict], next_page_token: Optional[Any]
     ) -> Dict[str, Any]:
-        """Return a dictionary of values to be used in URL parameterization."""
+        """Return a dictionary of values to be used in URL parameterization.
+
+        Args:
+            context: Stream sync context.
+            next_page_token: Value used to retreive the next page of results.
+
+        Returns:
+            A mapping of URL query parameters.
+        """
         params: Dict[str, Any] = {}
         if next_page_token:
             params["marker"] = next_page_token
@@ -74,6 +94,16 @@ class BitsoStream(RESTStream):
         If partitioning is supported, the `context` object will contain the partition
         definitions. Pagination information can be parsed from `next_page_token` if
         `next_page_token` is not None.
+
+        Args:
+            context: Stream sync context.
+            next_page_token: Value used to retreive the next page of results.
+
+        Returns:
+            A `requests.PreparedRequest`_ object.
+
+        .. _requests.Request:
+            https://docs.python-requests.org/en/latest/api/#requests.PreparedRequest
         """
         http_method = self.rest_method
         url: str = self.get_url(context)
@@ -116,7 +146,11 @@ class BitsoStream(RESTStream):
 
     @property
     def partitions(self) -> Optional[List[dict]]:
-        """Return a list of partition key dicts (if applicable), otherwise None."""
+        """Return a list of partition key dicts (if applicable), otherwise None.
+
+        Returns:
+            A list of dictionaries identifying stream partitions.
+        """
         if self.book_based:
             return [{"book": book} for book in self.config["books"]]
         return []
@@ -162,7 +196,6 @@ class BitsoStream(RESTStream):
             response: A `requests.Response`_ object.
 
         Raises:
-            FatalAPIError: If the request is not retriable.
             RetriableAPIError: If the request is retriable.
 
         .. _requests.Response:
