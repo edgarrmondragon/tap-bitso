@@ -126,8 +126,8 @@ class BitsoStream(RESTStream):
         return prepared_request
 
     def get_next_page_token(
-        self, response: requests.Response, previous_token: Optional[Any]
-    ) -> Any:
+        self, response: requests.Response, previous_token: Optional[str]
+    ) -> str:
         """Return token identifying next page or None if all records have been read.
 
         Args:
