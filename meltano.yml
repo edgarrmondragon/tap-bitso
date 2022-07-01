@@ -22,6 +22,10 @@ plugins:
       kind: array
     select_filter:
     - "!trades"
+    config:
+      books:
+      - btc_mxn
+      - eth_mxn
   loaders:
   - name: target-jsonl
     variant: andyh1203

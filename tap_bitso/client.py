@@ -155,26 +155,21 @@ class BitsoStream(RESTStream):
             return [{"book": book} for book in self.config["books"]]
         return []
 
-    def request_decorator(self, func: Callable) -> Callable:
-        """Instantiate a decorator for handling request failures.
-
-        Developers may override this method to provide custom backoff or retry
-        handling.
-
-        Args:
-            func: Function to decorate.
+    def backoff_max_tries(self) -> int:
+        """Return the maximum number of retries for a request.
 
         Returns:
-            A decorated method.
+            The maximum number of retries for a request.
         """
-        decorator: Callable = backoff.on_exception(
-            backoff.constant,
-            (RetriableAPIError,),
-            max_tries=60,
-            logger=self.tap_name,
-            interval=15,
-        )(func)
-        return decorator
+        return 60
+
+    def backoff_wait_generator(self) -> Callable[..., Generator[int, Any, None]]:
+        """Return a generator of backoff wait times.
+
+        Returns:
+            A generator of backoff wait times.
+        """
+        return backoff.constant
 
     def validate_response(self, response: requests.Response) -> None:
         """Validate HTTP response.
