@@ -46,6 +46,9 @@ line-length = 88
 profile = "black"
 multi_line_output = 3 # Vertical Hanging Indent
 src_paths = "tap_bitso"
+add_imports = [
+    "from __future__ import annotations",
+]
 
 [build-system]
 requires = ["poetry-core @ git+https://github.com/python-poetry/poetry-core.git@master"]

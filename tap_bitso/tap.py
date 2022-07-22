@@ -1,8 +1,9 @@
 """Bitso tap class."""
 
+from __future__ import annotations
+
 import logging
 import logging.config
-from typing import List
 
 import structlog
 from singer_sdk import Stream, Tap
@@ -84,7 +85,7 @@ class TapBitso(Tap):
         th.Property("books", th.ArrayType(th.StringType), default=["btc_mxn"]),
     ).to_dict()
 
-    def discover_streams(self) -> List[Stream]:
+    def discover_streams(self) -> list[Stream]:
         """Return a list of discovered streams.
 
         Returns:
