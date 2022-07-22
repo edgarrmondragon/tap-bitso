@@ -17,7 +17,7 @@ class BitsoAuthenticator(APIAuthenticatorBase):
     """Authenticator class for Bitso."""
 
     @classmethod
-    def create_for_stream(cls, stream: Stream) -> "BitsoAuthenticator":
+    def create_for_stream(cls, stream: Stream) -> BitsoAuthenticator:
         """Create the authenticator for the stream.
 
         Args:
@@ -28,7 +28,7 @@ class BitsoAuthenticator(APIAuthenticatorBase):
         """
         return cls(stream=stream)
 
-    def authenticate_request(self: "BitsoAuthenticator", request: Request) -> None:
+    def authenticate_request(self: BitsoAuthenticator, request: Request) -> None:
         """Modify outgoing request with authentication data.
 
         See: https://bitso.com/api_info?python#creating-and-signing-requests
