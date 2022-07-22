@@ -1,5 +1,7 @@
 """Bitso Authentication."""
 
+from __future__ import annotations
+
 import hashlib
 import hmac
 import json
