@@ -1,6 +1,9 @@
 """REST client handling, including BitsoStream base class."""
+
+from __future__ import annotations
+
 from pathlib import Path
-from typing import Any, Callable, Dict, Generator, List, Optional
+from typing import Any, Callable, Generator
 
 import backoff
 import requests
@@ -20,7 +23,7 @@ class BitsoStream(RESTStream):
     book_based = False
     retry_codes = {400}
 
-    def get_records(self, context: Optional[dict]) -> Generator[dict, None, None]:
+    def get_records(self, context: dict | None) -> Generator[dict, None, None]:
         """Return a generator of row-type dictionary objects.
 
         Each row emitted should be a dictionary of property names to their values.
@@ -65,8 +68,8 @@ class BitsoStream(RESTStream):
         return headers
 
     def get_url_params(
-        self, context: Optional[dict], next_page_token: Optional[Any]
-    ) -> Dict[str, Any]:
+        self, context: dict | None, next_page_token: Any | None
+    ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
         Args:
@@ -76,7 +79,7 @@ class BitsoStream(RESTStream):
         Returns:
             A mapping of URL query parameters.
         """
-        params: Dict[str, Any] = {}
+        params: dict[str, Any] = {}
         if next_page_token:
             params["marker"] = next_page_token
         if self.replication_key:
@@ -87,7 +90,7 @@ class BitsoStream(RESTStream):
         return params
 
     def prepare_request(
-        self, context: Optional[dict], next_page_token: Optional[Any]
+        self, context: dict | None, next_page_token: Any | None
     ) -> requests.PreparedRequest:
         """Prepare a request object.
 
@@ -126,8 +129,8 @@ class BitsoStream(RESTStream):
         return prepared_request
 
     def get_next_page_token(
-        self, response: requests.Response, previous_token: Optional[str]
-    ) -> str:
+        self, response: requests.Response, previous_token: str | None
+    ) -> Any | None:
         """Return token identifying next page or None if all records have been read.
 
         Args:
@@ -145,7 +148,7 @@ class BitsoStream(RESTStream):
         return token
 
     @property
-    def partitions(self) -> Optional[List[dict]]:
+    def partitions(self) -> list[dict] | None:
         """Return a list of partition key dicts (if applicable), otherwise None.
 
         Returns:

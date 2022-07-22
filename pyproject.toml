@@ -17,9 +17,9 @@ documentation = "https://github.com/edgarrmondragon/tap-bitso#readme"
 
 [tool.poetry.dependencies]
 python = "<3.11,>=3.7.1"
-singer-sdk = "==0.6.1"
-structlog = "==21.5.0"
-typing-extensions = "^4.2.0"
+singer-sdk = "==0.7.0"
+structlog = "==22.1.0"
+typing-extensions = "^4.3.0"
 
 [tool.poetry.dev-dependencies]
 colorama = ">=0.4.4"
@@ -46,6 +46,9 @@ line-length = 88
 profile = "black"
 multi_line_output = 3 # Vertical Hanging Indent
 src_paths = "tap_bitso"
+add_imports = [
+    "from __future__ import annotations",
+]
 
 [build-system]
 requires = ["poetry-core @ git+https://github.com/python-poetry/poetry-core.git@master"]
