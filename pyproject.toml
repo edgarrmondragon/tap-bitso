@@ -20,6 +20,7 @@ python = "<3.11,>=3.7.1"
 singer-sdk = "==0.7.0"
 structlog = "==22.1.0"
 typing-extensions = "^4.3.0"
+importlib-resources = {version = "^5.9.0", python = "<3.9"}
 
 [tool.poetry.dev-dependencies]
 colorama = ">=0.4.4"

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Any, Callable, Generator
 
 import backoff
@@ -12,8 +11,6 @@ from singer_sdk.streams import RESTStream
 from structlog.contextvars import bind_contextvars
 
 from tap_bitso.auth import BitsoAuthenticator
-
-SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
 
 class BitsoStream(RESTStream):

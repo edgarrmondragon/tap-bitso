@@ -2,11 +2,17 @@
 
 from __future__ import annotations
 
-from pathlib import Path
+import sys
 
+from tap_bitso import schemas
 from tap_bitso.client import BitsoStream
 
-SCHEMAS_DIR = Path(__file__).parent / "./schemas"
+if sys.version_info >= (3, 9):
+    import importlib.resources as resources
+else:
+    import importlib_resources as resources
+
+SCHEMAS_DIR = resources.files(schemas)
 
 
 class LedgerStream(BitsoStream):
