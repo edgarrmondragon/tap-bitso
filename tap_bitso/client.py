@@ -89,45 +89,6 @@ class BitsoStream(RESTStream):
             params["book"] = context["book"]
         return params
 
-    def prepare_request(
-        self, context: dict | None, next_page_token: Any | None
-    ) -> requests.PreparedRequest:
-        """Prepare a request object.
-
-        If partitioning is supported, the `context` object will contain the partition
-        definitions. Pagination information can be parsed from `next_page_token` if
-        `next_page_token` is not None.
-
-        Args:
-            context: Stream sync context.
-            next_page_token: Value used to retreive the next page of results.
-
-        Returns:
-            A `requests.PreparedRequest`_ object.
-
-        .. _requests.Request:
-            https://docs.python-requests.org/en/latest/api/#requests.PreparedRequest
-        """
-        http_method = self.rest_method
-        url: str = self.get_url(context)
-        params: dict = self.get_url_params(context, next_page_token)
-        request_data = self.prepare_request_payload(context, next_page_token)
-        headers = self.http_headers
-
-        request = requests.Request(
-            method=http_method,
-            url=url,
-            headers=headers,
-            params=params,
-            data=request_data,
-        )
-        self.authenticator.authenticate_request(request)
-
-        prepared_request: requests.PreparedRequest = (
-            self.requests_session.prepare_request(request)
-        )
-        return prepared_request
-
     def get_next_page_token(
         self, response: requests.Response, previous_token: str | None
     ) -> Any | None:
