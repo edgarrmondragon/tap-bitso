@@ -89,25 +89,6 @@ class BitsoStream(RESTStream):
             params["book"] = context["book"]
         return params
 
-    def get_next_page_token(
-        self, response: requests.Response, previous_token: str | None
-    ) -> Any | None:
-        """Return token identifying next page or None if all records have been read.
-
-        Args:
-            response: A raw `requests.Response`_ object.
-            previous_token: Previous pagination reference.
-
-        Returns:
-            Reference value to retrieve next page.
-
-        .. _requests.Response:
-            https://docs.python-requests.org/en/latest/api/#requests.Response
-        """
-        token = super().get_next_page_token(response, previous_token)
-        self.logger.debug("New page token %s", token)
-        return token
-
     @property
     def partitions(self) -> list[dict] | None:
         """Return a list of partition key dicts (if applicable), otherwise None.
