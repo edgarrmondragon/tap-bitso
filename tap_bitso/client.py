@@ -106,7 +106,7 @@ class BitsoStream(RESTStream):
         Returns:
             The maximum number of retries for a request.
         """
-        return 60
+        return 10
 
     def backoff_wait_generator(self) -> Callable[..., Generator[int, Any, None]]:
         """Return a generator of backoff wait times.
@@ -114,7 +114,7 @@ class BitsoStream(RESTStream):
         Returns:
             A generator of backoff wait times.
         """
-        return backoff.constant
+        return backoff.constant(interval=60)
 
     def validate_response(self, response: requests.Response) -> None:
         """Validate HTTP response.
