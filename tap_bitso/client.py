@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Callable, Generator
+from typing import Any, Generator
 
 import backoff
 import requests
@@ -108,7 +108,7 @@ class BitsoStream(RESTStream):
         """
         return 10
 
-    def backoff_wait_generator(self) -> Callable[..., Generator[int, Any, None]]:
+    def backoff_wait_generator(self) -> Generator[float, Any, None]:
         """Return a generator of backoff wait times.
 
         Returns:
