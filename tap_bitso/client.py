@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Callable, Generator
+from typing import Any, Generator
 
 import backoff
 import requests
@@ -106,15 +106,15 @@ class BitsoStream(RESTStream):
         Returns:
             The maximum number of retries for a request.
         """
-        return 60
+        return 10
 
-    def backoff_wait_generator(self) -> Callable[..., Generator[int, Any, None]]:
+    def backoff_wait_generator(self) -> Generator[float, Any, None]:
         """Return a generator of backoff wait times.
 
         Returns:
             A generator of backoff wait times.
         """
-        return backoff.constant
+        return backoff.constant(interval=60)
 
     def validate_response(self, response: requests.Response) -> None:
         """Validate HTTP response.
