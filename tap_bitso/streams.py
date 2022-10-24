@@ -1,5 +1,7 @@
 """Stream type classes for tap-bitso."""
 
+from __future__ import annotations
+
 from pathlib import Path
 
 from tap_bitso.client import BitsoStream

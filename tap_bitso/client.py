@@ -1,6 +1,9 @@
 """REST client handling, including BitsoStream base class."""
+
+from __future__ import annotations
+
 from pathlib import Path
-from typing import Any, Callable, Dict, Generator, List, Optional
+from typing import Any, Generator
 
 import backoff
 import requests
@@ -20,7 +23,7 @@ class BitsoStream(RESTStream):
     book_based = False
     retry_codes = {400}
 
-    def get_records(self, context: Optional[dict]) -> Generator[dict, None, None]:
+    def get_records(self, context: dict | None) -> Generator[dict, None, None]:
         """Return a generator of row-type dictionary objects.
 
         Each row emitted should be a dictionary of property names to their values.
@@ -65,8 +68,8 @@ class BitsoStream(RESTStream):
         return headers
 
     def get_url_params(
-        self, context: Optional[dict], next_page_token: Optional[Any]
-    ) -> Dict[str, Any]:
+        self, context: dict | None, next_page_token: Any | None
+    ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
         Args:
@@ -76,7 +79,7 @@ class BitsoStream(RESTStream):
         Returns:
             A mapping of URL query parameters.
         """
-        params: Dict[str, Any] = {}
+        params: dict[str, Any] = {}
         marker = self.get_starting_replication_key_value(context)
 
         if next_page_token:
@@ -90,66 +93,8 @@ class BitsoStream(RESTStream):
             params["book"] = context["book"]
         return params
 
-    def prepare_request(
-        self, context: Optional[dict], next_page_token: Optional[Any]
-    ) -> requests.PreparedRequest:
-        """Prepare a request object.
-
-        If partitioning is supported, the `context` object will contain the partition
-        definitions. Pagination information can be parsed from `next_page_token` if
-        `next_page_token` is not None.
-
-        Args:
-            context: Stream sync context.
-            next_page_token: Value used to retreive the next page of results.
-
-        Returns:
-            A `requests.PreparedRequest`_ object.
-
-        .. _requests.Request:
-            https://docs.python-requests.org/en/latest/api/#requests.PreparedRequest
-        """
-        http_method = self.rest_method
-        url: str = self.get_url(context)
-        params: dict = self.get_url_params(context, next_page_token)
-        request_data = self.prepare_request_payload(context, next_page_token)
-        headers = self.http_headers
-
-        request = requests.Request(
-            method=http_method,
-            url=url,
-            headers=headers,
-            params=params,
-            data=request_data,
-        )
-        self.authenticator.authenticate_request(request)
-
-        prepared_request: requests.PreparedRequest = (
-            self.requests_session.prepare_request(request)
-        )
-        return prepared_request
-
-    def get_next_page_token(
-        self, response: requests.Response, previous_token: Optional[Any]
-    ) -> Any:
-        """Return token identifying next page or None if all records have been read.
-
-        Args:
-            response: A raw `requests.Response`_ object.
-            previous_token: Previous pagination reference.
-
-        Returns:
-            Reference value to retrieve next page.
-
-        .. _requests.Response:
-            https://docs.python-requests.org/en/latest/api/#requests.Response
-        """
-        token = super().get_next_page_token(response, previous_token)
-        self.logger.debug("New page token %s", token)
-        return token
-
     @property
-    def partitions(self) -> Optional[List[dict]]:
+    def partitions(self) -> list[dict] | None:
         """Return a list of partition key dicts (if applicable), otherwise None.
 
         Returns:
@@ -159,26 +104,21 @@ class BitsoStream(RESTStream):
             return [{"book": book} for book in self.config["books"]]
         return []
 
-    def request_decorator(self, func: Callable) -> Callable:
-        """Instantiate a decorator for handling request failures.
-
-        Developers may override this method to provide custom backoff or retry
-        handling.
-
-        Args:
-            func: Function to decorate.
+    def backoff_max_tries(self) -> int:
+        """Return the maximum number of retries for a request.
 
         Returns:
-            A decorated method.
+            The maximum number of retries for a request.
         """
-        decorator: Callable = backoff.on_exception(
-            backoff.constant,
-            (RetriableAPIError,),
-            max_tries=60,
-            logger=self.tap_name,
-            interval=15,
-        )(func)
-        return decorator
+        return 10
+
+    def backoff_wait_generator(self) -> Generator[float, Any, None]:
+        """Return a generator of backoff wait times.
+
+        Returns:
+            A generator of backoff wait times.
+        """
+        return backoff.constant(interval=60)
 
     def validate_response(self, response: requests.Response) -> None:
         """Validate HTTP response.
