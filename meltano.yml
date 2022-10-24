@@ -1,6 +1,7 @@
 version: 1
 send_anonymous_usage_stats: false
 project_id: 2e2d28c2-b095-47e1-9804-ac713c722466
+default_environment: dev
 plugins:
   extractors:
   - name: tap-bitso
@@ -10,14 +11,21 @@ plugins:
     - state
     - catalog
     - discover
+    - about
+    - stream-maps
     settings:
     - name: key
       kind: password
+      label: Bitso API Key
+      description: Bitso API Key
+      docs: https://bitso.com/api_info?python#generating-api-keys
     - name: secret
       kind: password
+      label: Bitso API Secret
     - name: base_url
       kind: string
       value: https://api.bitso.com
+      label: Bitso API base URL
     - name: books
       kind: array
     select_filter:

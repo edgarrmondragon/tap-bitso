@@ -79,10 +79,32 @@ class TapBitso(Tap):
     name = "tap-bitso"
 
     config_jsonschema = th.PropertiesList(
-        th.Property("key", th.StringType, required=True),
-        th.Property("secret", th.StringType, required=True),
-        th.Property("base_url", th.StringType, default="https://api.bitso.com"),
-        th.Property("books", th.ArrayType(th.StringType), default=["btc_mxn"]),
+        th.Property(
+            "key",
+            th.StringType,
+            required=True,
+            description="Bitso API Key",
+        ),
+        th.Property(
+            "secret",
+            th.StringType,
+            required=True,
+            description="Bitso API Secret",
+        ),
+        th.Property(
+            "base_url",
+            th.StringType,
+            default="https://api.bitso.com",
+            description="Bitso API base URL",
+        ),
+        th.Property(
+            "books",
+            th.ArrayType(th.StringType),
+            default=["btc_mxn"],
+            description=(
+                "Specifies which book to use for `tickers` and other endpoints"
+            ),
+        ),
     ).to_dict()
 
     def discover_streams(self) -> list[Stream]:
