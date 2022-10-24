@@ -80,8 +80,12 @@ class BitsoStream(RESTStream):
             A mapping of URL query parameters.
         """
         params: dict[str, Any] = {}
+        marker = self.get_starting_replication_key_value(context)
+
         if next_page_token:
             params["marker"] = next_page_token
+        elif marker:
+            params["marker"] = marker
         if self.replication_key:
             params["limit"] = 100
             params["sort"] = "asc"

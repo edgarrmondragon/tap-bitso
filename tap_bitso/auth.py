@@ -17,7 +17,10 @@ class BitsoAuthenticator(APIAuthenticatorBase):
     """Authenticator class for Bitso."""
 
     @classmethod
-    def create_for_stream(cls, stream: Stream) -> BitsoAuthenticator:
+    def create_for_stream(
+        cls: type[BitsoAuthenticator],
+        stream: Stream,
+    ) -> BitsoAuthenticator:
         """Create the authenticator for the stream.
 
         Args:

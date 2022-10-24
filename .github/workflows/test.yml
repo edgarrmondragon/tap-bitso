@@ -1,11 +1,11 @@
 ### A CI workflow template that runs linting and python testing
 
-name: Test
+name: Test tap-bitso
 
 on: [push]
 
 jobs:
-  linting:
+  tests:
     runs-on: ubuntu-latest
     env:
       PIP_CONSTRAINT: .github/workflows/constraints.txt
@@ -13,13 +13,17 @@ jobs:
       matrix:
         include:
         - {python-version: "3.10", session: "lint"}
+        - {python-version: "3.10", session: "pytest"}
+        - {python-version: "3.9", session: "pytest"}
+        - {python-version: "3.8", session: "pytest"}
+        - {python-version: "3.7", session: "pytest"}
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3.1.0
+      uses: actions/checkout@v3.0.2
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4.3.0
+      uses: actions/setup-python@v4.2.0
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -39,6 +43,9 @@ jobs:
         pipx inject tox tox-poetry
         tox --version
 
-    - name: Run lint command from tox.ini
+    - name: Run Tox
+      env:
+        TAP_BITSO_KEY: ${{ secrets.TAP_BITSO_KEY }}
+        TAP_BITSO_SECRET: ${{ secrets.TAP_BITSO_SECRET }}
       run: |
         tox -e ${{ matrix.session }}
