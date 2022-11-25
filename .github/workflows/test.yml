@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PIP_CONSTRAINT: .github/workflows/constraints.txt
-      NOXSESSION: ${{ matrix.session }}
+      NOXSESSION: ${{ matrix.session }}-${{ matrix.python-version }}
       FORCE_COLOR: "1"
     strategy:
       matrix:
@@ -51,4 +51,4 @@ jobs:
         TAP_BITSO_KEY: ${{ secrets.TAP_BITSO_KEY }}
         TAP_BITSO_SECRET: ${{ secrets.TAP_BITSO_SECRET }}
       run: |
-        nox --python=${{ matrix.python-version }}
+        nox
