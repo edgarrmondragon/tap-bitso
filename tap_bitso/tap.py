@@ -69,7 +69,7 @@ logging.config.dictConfig(
                 "propagate": False,
             },
         },
-    }
+    },
 )
 
 
