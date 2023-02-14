@@ -1,0 +1,33 @@
+version: 1
+disable_existing_loggers: false
+
+formatters:
+  colored:
+    (): tap_bitso.tap.console_formatter
+    colors: true
+  json:
+    (): tap_bitso.tap.json_formatter
+  metrics:
+    format: "{asctime} {message}"
+    style: "{"
+handlers:
+  console:
+    level: INFO
+    class: logging.StreamHandler
+    formatter: colored
+  file:
+    level: DEBUG
+    class: logging.FileHandler
+    formatter: json
+    filename: tap.log
+  metrics:
+    class: logging.FileHandler
+    filename: metrics.log
+    formatter: metrics
+loggers:
+  root:
+    handlers: [console, file]
+    level: DEBUG
+    propagate: false
+  singer_sdk.metrics:
+    handlers: [metrics]
