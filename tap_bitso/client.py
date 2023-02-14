@@ -3,15 +3,17 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Generator
+from typing import TYPE_CHECKING, Any, Generator
 
 import backoff
-import requests
 from singer_sdk.exceptions import RetriableAPIError
 from singer_sdk.streams import RESTStream
 from structlog.contextvars import bind_contextvars
 
 from tap_bitso.auth import BitsoAuthenticator
+
+if TYPE_CHECKING:
+    import requests
 
 SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
@@ -68,7 +70,9 @@ class BitsoStream(RESTStream):
         return headers
 
     def get_url_params(
-        self, context: dict | None, next_page_token: Any | None
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 

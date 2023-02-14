@@ -6,11 +6,14 @@ import hashlib
 import hmac
 import json
 import time
+from typing import TYPE_CHECKING
 from urllib.parse import urlencode
 
-from requests import Request
 from singer_sdk.authenticators import APIAuthenticatorBase
-from singer_sdk.streams.core import Stream
+
+if TYPE_CHECKING:
+    from requests import Request
+    from singer_sdk.streams.core import Stream
 
 
 class BitsoAuthenticator(APIAuthenticatorBase):
