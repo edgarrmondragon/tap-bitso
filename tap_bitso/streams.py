@@ -13,7 +13,7 @@ class LedgerStream(BitsoStream):
     """Ledger stream."""
 
     name = "ledger"
-    path = "/v3/ledger/"
+    path = "/v3/ledger"
     replication_key = "eid"
     primary_keys = ["eid"]
     next_page_token_jsonpath = f"$.payload[-1].{replication_key}"

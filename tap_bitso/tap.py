@@ -2,75 +2,46 @@
 
 from __future__ import annotations
 
-import logging
-import logging.config
-
 import structlog
 from singer_sdk import Stream, Tap
 from singer_sdk import typing as th
 
-from tap_bitso.streams import (
-    BooksStream,
-    LedgerStream,
-    TickersStream,
-    TradesStream,
-    UserTradesStream,
-)
+from tap_bitso import streams
 
-STREAM_TYPES = [
-    BooksStream,
-    LedgerStream,
-    TickersStream,
-    UserTradesStream,
-    TradesStream,
-]
 
-logging.config.dictConfig(
-    {
-        "version": 1,
-        "disable_existing_loggers": True,
-        "formatters": {
-            "colored": {
-                "()": structlog.stdlib.ProcessorFormatter,
-                "processor": structlog.dev.ConsoleRenderer(colors=True),
-                "foreign_pre_chain": [
-                    structlog.stdlib.add_log_level,
-                    structlog.processors.TimeStamper(fmt="iso"),
-                ],
-            },
-            "json": {
-                "()": structlog.stdlib.ProcessorFormatter,
-                "processor": structlog.processors.JSONRenderer(),
-                "foreign_pre_chain": [
-                    structlog.stdlib.add_logger_name,
-                    structlog.stdlib.add_log_level,
-                    structlog.processors.TimeStamper(fmt="iso"),
-                    structlog.stdlib.PositionalArgumentsFormatter(),
-                ],
-            },
-        },
-        "handlers": {
-            "console": {
-                "level": "INFO",
-                "class": "logging.StreamHandler",
-                "formatter": "colored",
-            },
-            "file": {
-                "level": "DEBUG",
-                "class": "logging.FileHandler",
-                "formatter": "json",
-                "filename": "tap.log",
-            },
-        },
-        "loggers": {
-            "tap-bitso": {
-                "handlers": ["console", "file"],
-                "level": "DEBUG",
-                "propagate": False,
-            },
-        },
-    },
-)
+def console_formatter(*, colors: bool = True) -> structlog.stdlib.ProcessorFormatter:
+    """Return a console formatter for structlog.
+
+    Args:
+        colors: Whether to use colors in the console output.
+
+    Returns:
+        A structlog formatter.
+    """
+    return structlog.stdlib.ProcessorFormatter(
+        processor=structlog.dev.ConsoleRenderer(colors=colors),
+        foreign_pre_chain=[
+            structlog.stdlib.add_log_level,
+            structlog.processors.TimeStamper(fmt="iso"),
+        ],
+    )
+
+
+def json_formatter() -> structlog.stdlib.ProcessorFormatter:
+    """Return a JSON formatter for structlog.
+
+    Returns:
+        A structlog formatter.
+    """
+    return structlog.stdlib.ProcessorFormatter(
+        processor=structlog.processors.JSONRenderer(),
+        foreign_pre_chain=[
+            structlog.stdlib.add_logger_name,
+            structlog.stdlib.add_log_level,
+            structlog.processors.TimeStamper(fmt="iso"),
+            structlog.stdlib.PositionalArgumentsFormatter(),
+        ],
+    )
 
 
 class TapBitso(Tap):
@@ -113,4 +84,10 @@ class TapBitso(Tap):
         Returns:
             A list of streams.
         """
-        return [stream_class(tap=self) for stream_class in STREAM_TYPES]
+        return [
+            streams.BooksStream(tap=self),
+            streams.LedgerStream(tap=self),
+            streams.TickersStream(tap=self),
+            streams.TradesStream(tap=self),
+            streams.UserTradesStream(tap=self),
+        ]
