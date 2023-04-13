@@ -17,7 +17,7 @@ documentation = "https://github.com/edgarrmondragon/tap-bitso#readme"
 
 [tool.poetry.dependencies]
 python = "<3.12,>=3.7.1"
-singer-sdk = "==0.23.0"
+singer-sdk = "==0.24.0"
 structlog = "==23.1.0"
 typing-extensions = "^4.5.0"
 
