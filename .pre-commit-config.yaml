@@ -37,6 +37,4 @@ repos:
   - id: flake8
     additional_dependencies:
     - darglint
-    - flake8-annotations
-    - flake8-docstrings
     exclude: "noxfile\\.py"
