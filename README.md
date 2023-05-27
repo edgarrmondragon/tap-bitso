@@ -32,7 +32,7 @@ tap-bitso --about
 
 ### Source Authentication and Authorization
 
-This tap handles the [digest access authentication for the Bitso API](https://bitso.com/api_info?python#generating-api-keys).
+This tap handles the [digest access authentication for the Bitso API](https://docs.bitso.com/bitso-api/docs/authentication).
 
 ## Usage
 
