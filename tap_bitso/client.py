@@ -23,7 +23,7 @@ class BitsoStream(RESTStream):
 
     records_jsonpath = "$.payload[*]"
     book_based = False
-    retry_codes = {400}
+    retry_codes = (400,)
 
     def get_records(self, context: dict | None) -> Generator[dict, None, None]:
         """Return a generator of row-type dictionary objects.
