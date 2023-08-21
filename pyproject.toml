@@ -24,8 +24,8 @@ documentation = "https://github.com/edgarrmondragon/tap-bitso#readme"
 [tool.poetry.dependencies]
 python = "<3.12,>=3.7.1"
 singer-sdk = "~=0.31.0"
-structlog = "==23.1.0"
-typing-extensions = "^4.7.1"
+structlog = "~=23.1.0"
+typing-extensions = "~=4.7.1"
 
 [tool.poetry.dev-dependencies]
 colorama = ">=0.4.4"
