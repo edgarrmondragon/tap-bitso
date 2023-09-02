@@ -22,7 +22,7 @@ repository = "https://github.com/edgarrmondragon/tap-bitso"
 documentation = "https://github.com/edgarrmondragon/tap-bitso#readme"
 
 [tool.poetry.dependencies]
-python = "<3.12,>=3.7.1"
+python = "<3.12,>=3.8"
 singer-sdk = "~=0.31.0"
 structlog = "~=23.1.0"
 typing-extensions = "~=4.7.1"
