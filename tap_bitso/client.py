@@ -78,7 +78,7 @@ class BitsoStream(RESTStream):
 
         Args:
             context: Stream sync context.
-            next_page_token: Value used to retreive the next page of results.
+            next_page_token: Value used to retrieve the next page of results.
 
         Returns:
             A mapping of URL query parameters.
