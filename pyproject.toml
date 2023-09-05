@@ -1,12 +1,13 @@
 [build-system]
-build-backend = "poetry.core.masonry.api"
+build-backend = "poetry_dynamic_versioning.backend"
 requires = [
-  "poetry-core==1.6.1",
+  "poetry-core==1.7.0",
+  "poetry-dynamic-versioning",
 ]
 
 [tool.poetry]
 name = "tap-bitso"
-version = "0.0.1"
+version = "0.0.0"
 description = "`tap-bitso` is a Singer tap for Bitso, built with the Meltano SDK for Singer Taps."
 authors = ["Edgar Ramírez-Mondragón <edgarrm358@gmail.com>"]
 keywords = [
@@ -15,7 +16,7 @@ keywords = [
     "singer.io",
     "meltano-sdk",
 ]
-license = "Apache 2.0"
+license = "Apache-2.0"
 readme = "README.md"
 homepage = "https://github.com/edgarrmondragon/tap-bitso"
 repository = "https://github.com/edgarrmondragon/tap-bitso"
@@ -25,11 +26,11 @@ documentation = "https://github.com/edgarrmondragon/tap-bitso#readme"
 python = "<3.12,>=3.8"
 singer-sdk = "~=0.31.0"
 structlog = "~=23.1.0"
-typing-extensions = "~=4.7.1"
 
 [tool.poetry.dev-dependencies]
 colorama = ">=0.4.4"
-pytest = ">=6.2.5"
+pytest = ">=7"
+typing-extensions = "~=4.7.1"
 
 [tool.poetry.scripts]
 tap-bitso = 'tap_bitso.tap:TapBitso.cli'
@@ -40,12 +41,8 @@ line-length = 88
 [tool.ruff]
 ignore = ["ANN101", "DJ", "FIX002", "PD"]
 select = ["ALL"]
-target-version = "py37"
+target-version = "py38"
 unfixable = ["ERA001"]
-
-[tool.ruff.isort]
-known-first-party = ["tap_bitso"]
-required-imports = ["from __future__ import annotations"]
 
 [tool.ruff.per-file-ignores]
 "tests/*" = ["ANN201"]
@@ -58,3 +55,18 @@ module = [
     "backoff",
 ]
 ignore_missing_imports = true
+
+[tool.poetry-dynamic-versioning]
+enable = true
+format-jinja = """
+    {%- if distance == 0 -%}
+        {{ serialize_pep440(base, stage, revision) }}
+    {%- elif revision is not none -%}
+        {{ serialize_pep440(base, stage, revision + 1, dev=distance, metadata=[commit]) }}
+    {%- else -%}
+        {{ serialize_pep440(bump_version(base), stage, revision, dev=distance, metadata=[commit]) }}
+    {%- endif -%}
+"""
+metadata = true
+style = "pep440"
+vcs = "git"
