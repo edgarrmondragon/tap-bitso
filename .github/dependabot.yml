@@ -13,6 +13,7 @@ updates:
       - "edgarrmondragon"
     labels:
       - "pip dependencies"
+    versioning-strategy: increase-if-necessary
     commit-message:
       prefix: "feat(deps): "
       prefix-development: "chore(deps-dev): "
