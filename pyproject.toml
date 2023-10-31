@@ -35,19 +35,19 @@ typing-extensions = "~=4.8.0"
 [tool.poetry.scripts]
 tap-bitso = 'tap_bitso.tap:TapBitso.cli'
 
-[tool.black]
-line-length = 88
-
 [tool.ruff]
-ignore = ["ANN101", "DJ", "FIX002", "PD"]
-select = ["ALL"]
+line-length = 88
 target-version = "py38"
+
+[tool.ruff.lint]
+ignore = ["ANN101", "DJ", "FIX002", "PD", "COM812", "ISC001"]
+select = ["ALL"]
 unfixable = ["ERA001"]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "tests/*" = ["ANN201"]
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "google"
 
 [[tool.mypy.overrides]]
