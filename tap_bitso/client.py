@@ -2,15 +2,17 @@
 
 from __future__ import annotations
 
-from typing import Any, Callable, Generator
+from typing import TYPE_CHECKING, Any, Generator
 
 import backoff
-import requests
 from singer_sdk.exceptions import RetriableAPIError
 from singer_sdk.streams import RESTStream
 from structlog.contextvars import bind_contextvars
 
 from tap_bitso.auth import BitsoAuthenticator
+
+if TYPE_CHECKING:
+    import requests
 
 
 class BitsoStream(RESTStream):
@@ -18,7 +20,7 @@ class BitsoStream(RESTStream):
 
     records_jsonpath = "$.payload[*]"
     book_based = False
-    retry_codes = {400}
+    retry_codes = (400,)
 
     def get_records(self, context: dict | None) -> Generator[dict, None, None]:
         """Return a generator of row-type dictionary objects.
@@ -65,84 +67,32 @@ class BitsoStream(RESTStream):
         return headers
 
     def get_url_params(
-        self, context: dict | None, next_page_token: Any | None
+        self,
+        context: dict | None,
+        next_page_token: str | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
         Args:
             context: Stream sync context.
-            next_page_token: Value used to retreive the next page of results.
+            next_page_token: Value used to retrieve the next page of results.
 
         Returns:
             A mapping of URL query parameters.
         """
         params: dict[str, Any] = {}
+        marker = self.get_starting_replication_key_value(context)
+
         if next_page_token:
             params["marker"] = next_page_token
+        elif marker:
+            params["marker"] = marker
         if self.replication_key:
             params["limit"] = 100
             params["sort"] = "asc"
         if self.book_based and context:
             params["book"] = context["book"]
         return params
-
-    def prepare_request(
-        self, context: dict | None, next_page_token: Any | None
-    ) -> requests.PreparedRequest:
-        """Prepare a request object.
-
-        If partitioning is supported, the `context` object will contain the partition
-        definitions. Pagination information can be parsed from `next_page_token` if
-        `next_page_token` is not None.
-
-        Args:
-            context: Stream sync context.
-            next_page_token: Value used to retreive the next page of results.
-
-        Returns:
-            A `requests.PreparedRequest`_ object.
-
-        .. _requests.Request:
-            https://docs.python-requests.org/en/latest/api/#requests.PreparedRequest
-        """
-        http_method = self.rest_method
-        url: str = self.get_url(context)
-        params: dict = self.get_url_params(context, next_page_token)
-        request_data = self.prepare_request_payload(context, next_page_token)
-        headers = self.http_headers
-
-        request = requests.Request(
-            method=http_method,
-            url=url,
-            headers=headers,
-            params=params,
-            data=request_data,
-        )
-        self.authenticator.authenticate_request(request)
-
-        prepared_request: requests.PreparedRequest = (
-            self.requests_session.prepare_request(request)
-        )
-        return prepared_request
-
-    def get_next_page_token(
-        self, response: requests.Response, previous_token: str | None
-    ) -> Any | None:
-        """Return token identifying next page or None if all records have been read.
-
-        Args:
-            response: A raw `requests.Response`_ object.
-            previous_token: Previous pagination reference.
-
-        Returns:
-            Reference value to retrieve next page.
-
-        .. _requests.Response:
-            https://docs.python-requests.org/en/latest/api/#requests.Response
-        """
-        token = super().get_next_page_token(response, previous_token)
-        self.logger.debug("New page token %s", token)
-        return token
 
     @property
     def partitions(self) -> list[dict] | None:
@@ -161,15 +111,15 @@ class BitsoStream(RESTStream):
         Returns:
             The maximum number of retries for a request.
         """
-        return 60
+        return 10
 
-    def backoff_wait_generator(self) -> Callable[..., Generator[int, Any, None]]:
+    def backoff_wait_generator(self) -> Generator[float, Any, None]:
         """Return a generator of backoff wait times.
 
         Returns:
             A generator of backoff wait times.
         """
-        return backoff.constant
+        return backoff.constant(interval=60)
 
     def validate_response(self, response: requests.Response) -> None:
         """Validate HTTP response.

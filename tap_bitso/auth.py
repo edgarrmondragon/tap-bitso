@@ -4,20 +4,29 @@ from __future__ import annotations
 
 import hashlib
 import hmac
-import json
+import logging
 import time
-from urllib.parse import urlencode
+from typing import TYPE_CHECKING
+from urllib.parse import urlparse
 
-from requests import Request
 from singer_sdk.authenticators import APIAuthenticatorBase
-from singer_sdk.streams.core import Stream
+
+if TYPE_CHECKING:
+    from requests import PreparedRequest
+
+    from tap_bitso.streams import BitsoStream
+
+logger = logging.getLogger(__name__)
 
 
 class BitsoAuthenticator(APIAuthenticatorBase):
     """Authenticator class for Bitso."""
 
     @classmethod
-    def create_for_stream(cls, stream: Stream) -> BitsoAuthenticator:
+    def create_for_stream(
+        cls: type[BitsoAuthenticator],
+        stream: BitsoStream,
+    ) -> BitsoAuthenticator:
         """Create the authenticator for the stream.
 
         Args:
@@ -28,36 +37,57 @@ class BitsoAuthenticator(APIAuthenticatorBase):
         """
         return cls(stream=stream)
 
-    def authenticate_request(self: BitsoAuthenticator, request: Request) -> None:
+    def authenticate_request(
+        self: BitsoAuthenticator,
+        request: PreparedRequest,
+    ) -> PreparedRequest:
         """Modify outgoing request with authentication data.
 
         See: https://bitso.com/api_info?python#creating-and-signing-requests
 
         Args:
-            request: The `requests.Request`_ object.
+            request: The `requests.PreparedRequest`_ object.
+
+        Returns:
+            The modified `requests.PreparedRequest`_ object.
 
         .. _requests.Request:
-            https://docs.python-requests.org/en/latest/api/#requests.Request
+            https://docs.python-requests.org/en/latest/api/#requests.PreparedRequest
         """
         bitso_key: str = self.config["key"]
         bitso_secret: str = self.config["secret"]
         nonce = str(int(round(time.time() * 1000)))
 
-        _, path = request.url.split(self.config["base_url"])
-        message = nonce + request.method + path
+        parsed = urlparse(request.url)
+        method = request.method or "GET"
+        path = (
+            parsed.path if isinstance(parsed.path, str) else parsed.path.decode("utf-8")
+        )
+        message = nonce + method + path.rstrip("/")
 
-        if request.method.lower() == "post":
-            message += json.dumps(request.data)
+        if method.lower() == "post" and request.body:
+            message += (
+                request.body
+                if isinstance(request.body, str)
+                else request.body.decode("utf-8")
+            )
 
-        if request.params:
-            message += "?" + urlencode(request.params)
+        if parsed.query:
+            message += "?" + (
+                parsed.query
+                if isinstance(parsed.query, str)
+                else parsed.query.decode("utf-8")
+            )
+
+        self.logger.debug("Signing message: %s", message)
 
         signature = hmac.new(
             bitso_secret.encode("utf-8"),
             message.encode("utf-8"),
             hashlib.sha256,
         ).hexdigest()
-        auth_header = f"Bitso {bitso_key}:{nonce}:{signature}"
 
         # Update request with Bitso auth
-        request.headers.update({"Authorization": auth_header})
+        request.headers["Authorization"] = f"Bitso {bitso_key}:{nonce}:{signature}"
+
+        return request

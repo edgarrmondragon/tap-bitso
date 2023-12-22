@@ -1,33 +1,54 @@
 ### A CI workflow template that runs linting and python testing
 
-name: Test
+name: Test tap-bitso
 
-on: [push]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  linting:
+  tests:
     runs-on: ubuntu-latest
+    env:
+      PIP_CONSTRAINT: .github/workflows/constraints.txt
+      NOXSESSION: tests-${{ matrix.python-version }}
+      FORCE_COLOR: "1"
     strategy:
       matrix:
-        # Only lint using the primary version used for dev
-        python-version: [3.9]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v4
+
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+
+    - name: Upgrade pip
+      run: |
+        pip install pip
+        pip --version
+
     - name: Install Poetry
-      uses: snok/install-poetry@v1
-      with:
-        version: 1.1.11
-    - name: Create virtual environment
       run: |
-        poetry env use python
-    - name: Install dependencies
+        pipx install poetry
+        pipx inject poetry poetry-plugin-version
+        pipx inject poetry poetry-dynamic-versioning
+        poetry --version
+
+    - name: Install Nox
       run: |
-        poetry install
-    - name: Lint
+        pipx install nox
+        pipx inject nox nox-poetry
+        nox --version
+
+    - name: Run Nox
+      env:
+        TAP_BITSO_KEY: ${{ secrets.TAP_BITSO_KEY }}
+        TAP_BITSO_SECRET: ${{ secrets.TAP_BITSO_SECRET }}
       run: |
-        poetry run tox -e lint
+        nox

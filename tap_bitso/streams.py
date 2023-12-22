@@ -3,27 +3,28 @@
 from __future__ import annotations
 
 import sys
+import typing as t
 
 from tap_bitso import schemas
 from tap_bitso.client import BitsoStream
 
 if sys.version_info >= (3, 9):
-    import importlib.resources as resources
+    from importlib import resources as importlib_resources
 else:
-    import importlib_resources as resources
+    import importlib_resources
 
-SCHEMAS_DIR = resources.files(schemas)
+SCHEMAS_DIR = importlib_resources.files(schemas)
 
 
 class LedgerStream(BitsoStream):
     """Ledger stream."""
 
     name = "ledger"
-    path = "/v3/ledger/"
+    path = "/v3/ledger"
     replication_key = "eid"
-    primary_keys = ["eid"]
+    primary_keys: t.ClassVar[list[str]] = ["eid"]
     next_page_token_jsonpath = f"$.payload[-1].{replication_key}"
-    schema_filepath = SCHEMAS_DIR / "ledger.json"
+    schema_filepath = SCHEMAS_DIR / "ledger.json"  # type: ignore[assignment]
 
 
 class TradesStream(BitsoStream):
@@ -33,9 +34,9 @@ class TradesStream(BitsoStream):
     path = "/v3/trades"
     book_based = True
     replication_key = "tid"
-    primary_keys = ["tid"]
+    primary_keys: t.ClassVar[list[str]] = ["tid"]
     next_page_token_jsonpath = f"$.payload[-1].{replication_key}"
-    schema_filepath = SCHEMAS_DIR / "trade.json"
+    schema_filepath = SCHEMAS_DIR / "trade.json"  # type: ignore[assignment]
 
 
 class UserTradesStream(BitsoStream):
@@ -45,9 +46,9 @@ class UserTradesStream(BitsoStream):
     path = "/v3/user_trades"
     book_based = True
     replication_key = "tid"
-    primary_keys = ["tid"]
+    primary_keys: t.ClassVar[list[str]] = ["tid"]
     next_page_token_jsonpath = f"$.payload[-1].{replication_key}"
-    schema_filepath = SCHEMAS_DIR / "trade.json"
+    schema_filepath = SCHEMAS_DIR / "trade.json"  # type: ignore[assignment]
 
 
 class TickersStream(BitsoStream):
@@ -57,14 +58,14 @@ class TickersStream(BitsoStream):
     path = "/v3/ticker"
     book_based = True
     records_jsonpath = "$.payload"
-    primary_keys = ["book", "created_at"]
-    schema_filepath = SCHEMAS_DIR / "ticker.json"
+    primary_keys: t.ClassVar[list[str]] = ["book", "created_at"]
+    schema_filepath = SCHEMAS_DIR / "ticker.json"  # type: ignore[assignment]
 
 
 class BooksStream(BitsoStream):
     """Books stream."""
 
     name = "books"
-    path = "/v3/available_books/"
-    primary_keys = ["book"]
-    schema_filepath = SCHEMAS_DIR / "book.json"
+    path = "/v3/available_books"
+    primary_keys: t.ClassVar[list[str]] = ["book"]
+    schema_filepath = SCHEMAS_DIR / "book.json"  # type: ignore[assignment]
