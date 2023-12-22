@@ -46,9 +46,13 @@ jobs:
         pipx inject nox nox-poetry
         nox --version
 
-    - name: Run Nox
+    - name: Check Types
+      run: |
+        nox -s mypy-${{ matrix.python-version }}
+
+    - name: Run Tests
       env:
         TAP_BITSO_KEY: ${{ secrets.TAP_BITSO_KEY }}
         TAP_BITSO_SECRET: ${{ secrets.TAP_BITSO_SECRET }}
       run: |
-        nox
+        nox -s tests-${{ matrix.python-version }}
