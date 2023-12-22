@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 from typing import TYPE_CHECKING, Any, Generator
 
 import backoff
@@ -14,8 +13,6 @@ from tap_bitso.auth import BitsoAuthenticator
 
 if TYPE_CHECKING:
     import requests
-
-SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
 
 class BitsoStream(RESTStream):

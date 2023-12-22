@@ -13,7 +13,8 @@ from singer_sdk.authenticators import APIAuthenticatorBase
 
 if TYPE_CHECKING:
     from requests import PreparedRequest
-    from singer_sdk.streams.core import Stream
+
+    from tap_bitso.streams import BitsoStream
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +25,7 @@ class BitsoAuthenticator(APIAuthenticatorBase):
     @classmethod
     def create_for_stream(
         cls: type[BitsoAuthenticator],
-        stream: Stream,
+        stream: BitsoStream,
     ) -> BitsoAuthenticator:
         """Create the authenticator for the stream.
 

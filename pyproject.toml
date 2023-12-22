@@ -23,9 +23,10 @@ repository = "https://github.com/edgarrmondragon/tap-bitso"
 documentation = "https://github.com/edgarrmondragon/tap-bitso#readme"
 
 [tool.poetry.dependencies]
-python = "<3.12,>=3.8"
+importlib-resources = {version = ">=6,<7", python = "<3.9"}
+python = "<4,>=3.8"
 singer-sdk = "~=0.34.0"
-structlog = ">=23.1,<23.3"
+structlog = ">=23,<24"
 
 [tool.poetry.dev-dependencies]
 colorama = ">=0.4.4"
@@ -64,6 +65,13 @@ unfixable = ["ERA001"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+
+[tool.mypy]
+python_version = "3.11"
+warn_redundant_casts = true
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
 module = [
