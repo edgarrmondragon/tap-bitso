@@ -17,7 +17,10 @@ SCHEMAS_DIR = importlib_resources.files(schemas)
 
 
 class LedgerStream(BitsoStream):
-    """Ledger stream."""
+    """Ledger stream.
+
+    DEPRECATED.
+    """
 
     name = "ledger"
     path = "/v3/ledger"

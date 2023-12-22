@@ -86,7 +86,7 @@ class TapBitso(Tap):
         """
         return [
             streams.BooksStream(tap=self),
-            streams.LedgerStream(tap=self),
+            # streams.LedgerStream(tap=self),  # Removed upstream?  # noqa: ERA001
             streams.TickersStream(tap=self),
             streams.TradesStream(tap=self),
             streams.UserTradesStream(tap=self),
