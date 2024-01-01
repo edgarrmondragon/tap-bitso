@@ -14,7 +14,7 @@ from singer_sdk.authenticators import APIAuthenticatorBase
 if TYPE_CHECKING:
     from requests import PreparedRequest
 
-    from tap_bitso.streams import BitsoStream
+    from tap_bitso.client import BitsoStream
 
 logger = logging.getLogger(__name__)
 
