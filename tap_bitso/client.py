@@ -15,14 +15,17 @@ if TYPE_CHECKING:
     import requests
 
 
-class BitsoStream(RESTStream):
+class BitsoStream(RESTStream[str]):
     """Bitso stream class."""
 
     records_jsonpath = "$.payload[*]"
     book_based = False
     retry_codes = (400,)
 
-    def get_records(self, context: dict | None) -> Generator[dict, None, None]:
+    def get_records(
+        self,
+        context: dict[str, Any] | None,
+    ) -> Generator[dict[str, Any], None, None]:
         """Return a generator of row-type dictionary objects.
 
         Each row emitted should be a dictionary of property names to their values.
@@ -43,7 +46,7 @@ class BitsoStream(RESTStream):
         Returns:
             Base URL for all API requests.
         """
-        return self.config["base_url"]
+        return self.config["base_url"]  # type: ignore[no-any-return]
 
     @property
     def authenticator(self) -> BitsoAuthenticator:
@@ -55,7 +58,7 @@ class BitsoStream(RESTStream):
         return BitsoAuthenticator.create_for_stream(self)
 
     @property
-    def http_headers(self) -> dict:
+    def http_headers(self) -> dict[str, Any]:
         """Return the http headers needed.
 
         Returns:
@@ -68,7 +71,7 @@ class BitsoStream(RESTStream):
 
     def get_url_params(
         self,
-        context: dict | None,
+        context: dict[str, Any] | None,
         next_page_token: str | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
@@ -95,7 +98,7 @@ class BitsoStream(RESTStream):
         return params
 
     @property
-    def partitions(self) -> list[dict] | None:
+    def partitions(self) -> list[dict[str, Any]] | None:
         """Return a list of partition key dicts (if applicable), otherwise None.
 
         Returns:
