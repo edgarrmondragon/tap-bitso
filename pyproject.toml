@@ -34,7 +34,7 @@ dependencies = [
   "backoff",
   'importlib-resources<7,>=6; python_version < "3.9"',
   "singer-sdk~=0.34.0",
-  "structlog<24,>=23",
+  "structlog<25,>=23",
 ]
 optional-dependencies.dev = [
   "colorama>=0.4.4",
