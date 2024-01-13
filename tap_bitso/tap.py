@@ -8,6 +8,14 @@ from singer_sdk import typing as th
 
 from tap_bitso import streams
 
+structlog.configure(
+    wrapper_class=structlog.stdlib.BoundLogger,
+    logger_factory=structlog.stdlib.LoggerFactory(),
+    processors=[
+        structlog.processors.JSONRenderer(),
+    ],
+)
+
 
 def console_formatter(*, colors: bool = True) -> structlog.stdlib.ProcessorFormatter:
     """Return a console formatter for structlog.

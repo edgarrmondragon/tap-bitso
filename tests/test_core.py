@@ -4,11 +4,19 @@ from __future__ import annotations
 
 from typing import Any
 
+import pytest
+import stamina
 from singer_sdk.testing import SuiteConfig, get_tap_test_class
 
 from tap_bitso.tap import TapBitso
 
 SAMPLE_CONFIG: dict[str, Any] = {}
+
+
+@pytest.fixture(autouse=True, scope="session")
+def _deactivate_retries() -> None:
+    """Deactivate stamina retries for all tests."""
+    stamina.set_active(active=False)
 
 
 TestTapBitso = get_tap_test_class(

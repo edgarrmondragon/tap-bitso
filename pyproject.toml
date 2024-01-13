@@ -31,9 +31,9 @@ dynamic = [
   "version",
 ]
 dependencies = [
-  "backoff",
   'importlib-resources<7,>=6; python_version < "3.9"',
   "singer-sdk~=0.34.0",
+  "stamina~=24.1.0",
   "structlog<25,>=23",
 ]
 optional-dependencies.dev = [
@@ -110,9 +110,3 @@ warn_redundant_casts = true
 warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
-
-[[tool.mypy.overrides]]
-module = [
-    "backoff",
-]
-ignore_missing_imports = true
