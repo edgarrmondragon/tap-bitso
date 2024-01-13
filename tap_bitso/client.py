@@ -2,17 +2,15 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Generator
+from typing import Any, Callable, Generator
 
-import backoff
+import requests
+import stamina
 from singer_sdk.exceptions import RetriableAPIError
 from singer_sdk.streams import RESTStream
 from structlog.contextvars import bind_contextvars
 
 from tap_bitso.auth import BitsoAuthenticator
-
-if TYPE_CHECKING:
-    import requests
 
 
 class BitsoStream(RESTStream[str]):
@@ -108,21 +106,31 @@ class BitsoStream(RESTStream[str]):
             return [{"book": book} for book in self.config["books"]]
         return []
 
-    def backoff_max_tries(self) -> int:
-        """Return the maximum number of retries for a request.
+    def request_decorator(self, func: Callable) -> Callable:  # type: ignore[type-arg]
+        """Return a decorator for a request function.
+
+        Args:
+            func: The function to decorate.
 
         Returns:
-            The maximum number of retries for a request.
+            A decorated function.
         """
-        return 10
-
-    def backoff_wait_generator(self) -> Generator[float, Any, None]:
-        """Return a generator of backoff wait times.
-
-        Returns:
-            A generator of backoff wait times.
-        """
-        return backoff.constant(interval=60)
+        return stamina.retry(
+            on=(
+                ConnectionResetError,
+                RetriableAPIError,
+                requests.exceptions.ReadTimeout,
+                requests.exceptions.ConnectionError,
+                requests.exceptions.ChunkedEncodingError,
+                requests.exceptions.ContentDecodingError,
+            ),
+            attempts=10,
+            timeout=600,
+            wait_initial=60,
+            wait_max=300,
+            wait_jitter=5,
+            wait_exp_base=1.1,
+        )(func)
 
     def validate_response(self, response: requests.Response) -> None:
         """Validate HTTP response.
