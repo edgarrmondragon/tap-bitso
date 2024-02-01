@@ -8,7 +8,7 @@ on:
     - tests/**
     - pyproject.toml
     - .github/workflows/test.yml
-    - .github/workflows/constraints.tx
+    - .github/workflows/constraints.txt
   pull_request:
     branches: [ main ]
     paths:
@@ -16,7 +16,7 @@ on:
     - tests/**
     - pyproject.toml
     - .github/workflows/test.yml
-    - .github/workflows/constraints.tx
+    - .github/workflows/constraints.txt
   schedule:
   - cron: "0 10 * * *"
   workflow_dispatch:
@@ -42,6 +42,7 @@ jobs:
         fetch-depth: 0
 
     - uses: actions/setup-python@v5
+      id: setup-python
       with:
         python-version: ${{ matrix.python-version }}
         cache: pip
@@ -53,7 +54,7 @@ jobs:
 
     - name: Install Hatch
       run: |
-        pipx install hatch
+        pipx install --python ${{ steps.setup-python.outputs.python-path }} hatch
         hatch --version
 
     - name: Run
