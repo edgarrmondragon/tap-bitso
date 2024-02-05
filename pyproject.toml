@@ -33,7 +33,7 @@ dynamic = [
 dependencies = [
   'importlib-resources<7,>=6; python_version < "3.9"',
   "singer-sdk~=0.35.0",
-  "stamina~=24.1.0",
+  "stamina~=24.2.0",
   "structlog<25,>=23",
 ]
 optional-dependencies.dev = [
