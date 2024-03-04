@@ -49,9 +49,9 @@ optional-dependencies.typing = [
   "mypy",
   "types-requests",
 ]
-urls.documentation = "https://github.com/edgarrmondragon/tap-bitso#readme"
-urls.homepage = "https://github.com/edgarrmondragon/tap-bitso"
-urls.repository = "https://github.com/edgarrmondragon/tap-bitso"
+urls.Documentation = "https://github.com/edgarrmondragon/tap-bitso#readme"
+urls.Homepage = "https://github.com/edgarrmondragon/tap-bitso"
+urls.Repository = "https://github.com/edgarrmondragon/tap-bitso"
 scripts."tap-bitso" = 'tap_bitso.tap:TapBitso.cli'
 
 [tool.hatch.version]
