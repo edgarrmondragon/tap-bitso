@@ -132,6 +132,23 @@
       "examples": [
         "2016-04-08T17:52:31.000+00:00"
       ]
+    },
+    "rolling_average_change": {
+      "$id": "#/properties/rolling_average_change",
+      "type": "object",
+      "examples": [
+        {
+          "6": "-0.5228"
+        }
+      ],
+      "properties": {
+        "6": {
+          "type": "string",
+          "examples": [
+            "-0.5228"
+          ]
+        }
+      }
     }
   },
   "additionalProperties": true
