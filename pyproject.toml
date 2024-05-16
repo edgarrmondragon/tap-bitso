@@ -38,7 +38,8 @@ dependencies = [
 ]
 optional-dependencies.dev = [
   "colorama>=0.4.4",
-  "singer-sdk[testing,typing]~=0.37.0",
+  "singer-sdk[testing]~=0.37.0",
+  "tap-bitso[testing,typing]",
 ]
 optional-dependencies.testing = [
   "deptry>=0.12",
@@ -96,6 +97,7 @@ convention = "google"
 colorama = "colorama"
 importlib-resources = "importlib_resources"
 mypy = "mypy"
+tap-bitso = "tap_bitso"
 types-requests = "requests"
 
 [tool.deptry.per_rule_ignores]

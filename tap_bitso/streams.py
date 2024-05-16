@@ -5,7 +5,7 @@ from __future__ import annotations
 import sys
 
 from tap_bitso import schemas
-from tap_bitso.client import BitsoStream
+from tap_bitso.client import AuthenticatedBitsoStream, BitsoStream
 
 if sys.version_info >= (3, 9):
     from importlib import resources as importlib_resources
@@ -15,7 +15,7 @@ else:
 SCHEMAS_DIR = importlib_resources.files(schemas)
 
 
-class LedgerStream(BitsoStream):
+class LedgerStream(AuthenticatedBitsoStream):
     """Ledger stream.
 
     DEPRECATED.
@@ -41,7 +41,7 @@ class TradesStream(BitsoStream):
     schema_filepath = SCHEMAS_DIR / "trade.json"
 
 
-class UserTradesStream(BitsoStream):
+class UserTradesStream(AuthenticatedBitsoStream):
     """User trades stream."""
 
     name = "user_trades"
