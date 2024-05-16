@@ -97,6 +97,7 @@ convention = "google"
 colorama = "colorama"
 importlib-resources = "importlib_resources"
 mypy = "mypy"
+tap-bitso = "tap_bitso"
 types-requests = "requests"
 
 [tool.deptry.per_rule_ignores]
