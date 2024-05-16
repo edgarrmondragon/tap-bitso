@@ -47,15 +47,6 @@ class BitsoStream(RESTStream[str]):
         return self.config["base_url"]  # type: ignore[no-any-return]
 
     @property
-    def authenticator(self) -> BitsoAuthenticator:
-        """Return a new authenticator object.
-
-        Returns:
-            The Bitso API authenticator object.
-        """
-        return BitsoAuthenticator.create_for_stream(self)
-
-    @property
     def http_headers(self) -> dict[str, Any]:
         """Return the http headers needed.
 
@@ -161,3 +152,16 @@ class BitsoStream(RESTStream[str]):
             raise RetriableAPIError(response.reason)
 
         super().validate_response(response)
+
+
+class AuthenticatedBitsoStream(BitsoStream):
+    """Bitso stream class with authentication."""
+
+    @property
+    def authenticator(self) -> BitsoAuthenticator:
+        """Return a new authenticator object.
+
+        Returns:
+            The Bitso API authenticator object.
+        """
+        return BitsoAuthenticator.create_for_stream(self)
