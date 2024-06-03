@@ -16,8 +16,12 @@ keywords = [
   "singer.io",
 ]
 license.file = "LICENSE"
-maintainers = [{ name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" }]
-authors = [{ name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" }]
+maintainers = [
+  { name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" },
+]
+authors = [
+  { name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" },
+]
 requires-python = ">=3.8"
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
@@ -31,7 +35,7 @@ dynamic = [
   "version",
 ]
 dependencies = [
-  'importlib-resources<7,>=6; python_version < "3.9"',
+  "importlib-resources<7,>=6; python_version<'3.9'",
   "singer-sdk~=0.37.0",
   "stamina~=24.2.0",
   "structlog<25,>=23",
@@ -53,7 +57,7 @@ optional-dependencies.typing = [
 urls.Documentation = "https://github.com/edgarrmondragon/tap-bitso#readme"
 urls.Homepage = "https://github.com/edgarrmondragon/tap-bitso"
 urls.Repository = "https://github.com/edgarrmondragon/tap-bitso"
-scripts."tap-bitso" = 'tap_bitso.tap:TapBitso.cli'
+scripts."tap-bitso" = "tap_bitso.tap:TapBitso.cli"
 
 [tool.hatch.version]
 source = "vcs"
@@ -63,7 +67,9 @@ console = "tap-bitso {args}"
 jsonl = "tap-bitso {args} > tap-bitso.jsonl"
 
 [tool.hatch.envs.test]
-features = ["testing"]
+features = [
+  "testing",
+]
 [tool.hatch.envs.test.scripts]
 integration = "pytest {args:tests}"
 dependencies = "deptry ."
@@ -71,27 +77,44 @@ dependencies = "deptry ."
 [tool.hatch.envs.all]
 template = "test"
 [[tool.hatch.envs.all.matrix]]
-python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
+python = [
+  "3.8",
+  "3.9",
+  "3.10",
+  "3.11",
+  "3.12",
+]
 
 [tool.hatch.envs.typing]
-features = ["testing", "typing"]
+features = [
+  "testing",
+  "typing",
+]
 [tool.hatch.envs.typing.scripts]
 check = "mypy --strict {args:tap_bitso tests}"
 
 [tool.ruff]
-line-length = 88
 target-version = "py38"
 
-[tool.ruff.lint]
-ignore = ["ANN101", "DJ", "FIX002", "PD", "COM812", "ISC001"]
-select = ["ALL"]
-unfixable = ["ERA001"]
-
-[tool.ruff.lint.per-file-ignores]
-"tests/*" = ["ANN201"]
-
-[tool.ruff.lint.pydocstyle]
-convention = "google"
+line-length = 88
+lint.select = [
+  "ALL",
+]
+lint.ignore = [
+  "ANN101",
+  "COM812",
+  "DJ",
+  "FIX002",
+  "ISC001",
+  "PD",
+]
+lint.per-file-ignores."tests/*" = [
+  "ANN201",
+]
+lint.unfixable = [
+  "ERA001",
+]
+lint.pydocstyle.convention = "google"
 
 [tool.deptry.package_module_name_map]
 colorama = "colorama"
