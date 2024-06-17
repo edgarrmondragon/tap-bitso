@@ -36,19 +36,19 @@ dynamic = [
 ]
 dependencies = [
   "importlib-resources<7,>=6; python_version<'3.9'",
-  "singer-sdk~=0.37.0",
+  "singer-sdk~=0.38.0",
   "stamina~=24.2.0",
   "structlog<25,>=23",
 ]
 optional-dependencies.dev = [
   "colorama>=0.4.4",
-  "singer-sdk[testing]~=0.37.0",
+  "singer-sdk[testing]~=0.38.0",
   "tap-bitso[testing,typing]",
 ]
 optional-dependencies.testing = [
   "deptry>=0.12",
   "pytest>=7.4",
-  "singer-sdk[testing]~=0.37.0",
+  "singer-sdk[testing]~=0.38.0",
 ]
 optional-dependencies.typing = [
   "mypy",
