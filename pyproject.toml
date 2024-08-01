@@ -36,7 +36,7 @@ dynamic = [
 ]
 dependencies = [
   "importlib-resources<7,>=6; python_version<'3.9'",
-  "singer-sdk~=0.38.0",
+  "singer-sdk~=0.39.0",
   "stamina~=24.2.0",
   "structlog<25,>=23",
 ]
