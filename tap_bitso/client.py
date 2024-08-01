@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import typing as t
 from typing import Any, Callable, Generator
 
 import requests
@@ -11,6 +12,9 @@ from singer_sdk.streams import RESTStream
 from structlog.contextvars import bind_contextvars
 
 from tap_bitso.auth import BitsoAuthenticator
+
+if t.TYPE_CHECKING:
+    from singer_sdk.helpers.types import Context, Record
 
 
 class BitsoStream(RESTStream[str]):
@@ -22,8 +26,8 @@ class BitsoStream(RESTStream[str]):
 
     def get_records(
         self,
-        context: dict[str, Any] | None,
-    ) -> Generator[dict[str, Any], None, None]:
+        context: Context | None,
+    ) -> Generator[Record, None, None]:
         """Return a generator of row-type dictionary objects.
 
         Each row emitted should be a dictionary of property names to their values.
@@ -60,7 +64,7 @@ class BitsoStream(RESTStream[str]):
 
     def get_url_params(
         self,
-        context: dict[str, Any] | None,
+        context: Context | None,
         next_page_token: str | None,
     ) -> dict[str, Any]:
         """Return a dictionary of values to be used in URL parameterization.
@@ -87,7 +91,7 @@ class BitsoStream(RESTStream[str]):
         return params
 
     @property
-    def partitions(self) -> list[dict[str, Any]] | None:
+    def partitions(self) -> list[Context] | None:
         """Return a list of partition key dicts (if applicable), otherwise None.
 
         Returns:
