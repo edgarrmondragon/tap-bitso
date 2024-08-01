@@ -30,6 +30,7 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
 ]
 dynamic = [
   "version",
@@ -62,6 +63,11 @@ scripts."tap-bitso" = "tap_bitso.tap:TapBitso.cli"
 [tool.hatch.version]
 source = "vcs"
 
+[tool.hatch.envs.default.overrides]
+env.GITHUB_ACTIONS.dev-mode = { value = false, if = [
+  "true",
+] }
+
 [tool.hatch.envs.sync.scripts]
 console = "tap-bitso {args}"
 jsonl = "tap-bitso {args} > tap-bitso.jsonl"
@@ -83,6 +89,7 @@ python = [
   "3.10",
   "3.11",
   "3.12",
+  "3.13",
 ]
 
 [tool.hatch.envs.typing]
@@ -130,6 +137,9 @@ DEP002 = [
   "mypy",
   "pytest",
 ]
+
+[tool.pyproject-fmt]
+max_supported_python = "3.13"
 
 [tool.pytest.ini_options]
 addopts = "-vvv"
