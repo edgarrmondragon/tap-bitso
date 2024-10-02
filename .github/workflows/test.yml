@@ -39,8 +39,8 @@ jobs:
         - "3.12"
         - "3.13"
         include:
-        - { script: "test:dependencies", python-version: "3.12" }
-        - { script: "typing:check",      python-version: "3.12" }
+        - { script: "test:dependencies", python-version: "3.x" }
+        - { script: "typing:check",      python-version: "3.x" }
 
     steps:
     - uses: actions/checkout@v4
@@ -61,11 +61,12 @@ jobs:
 
     - name: Install Hatch
       run: |
-        pipx install --python ${{ steps.setup-python.outputs.python-path }} hatch
+        pipx install hatch
         hatch --version
 
     - name: Run
       env:
+        HATCH_PYTHON: ${{ steps.setup-python.outputs.python-path }}
         TAP_BITSO_KEY: ${{ secrets.TAP_BITSO_KEY }}
         TAP_BITSO_SECRET: ${{ secrets.TAP_BITSO_SECRET }}
       run: |
