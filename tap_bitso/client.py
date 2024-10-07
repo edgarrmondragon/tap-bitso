@@ -91,7 +91,7 @@ class BitsoStream(RESTStream[str]):
         return params
 
     @property
-    def partitions(self) -> list[Context] | None:
+    def partitions(self) -> list[dict[str, t.Any]] | None:
         """Return a list of partition key dicts (if applicable), otherwise None.
 
         Returns:
