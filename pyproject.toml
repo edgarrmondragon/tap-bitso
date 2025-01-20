@@ -37,7 +37,7 @@ dynamic = [
 dependencies = [
   "singer-sdk~=0.43.1",
   "stamina~=24.3.0",
-  "structlog>=23,<25",
+  "structlog>=23,<26",
 ]
 optional-dependencies.dev = [
   "colorama>=0.4.4",
