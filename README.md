@@ -9,7 +9,7 @@ Built with the Meltano [SDK](https://gitlab.com/meltano/sdk) for Singer Taps.
 ## Installation
 
 ```bash
-pipx install git+https://github.com/edgarrmondragon/tap-bitso.git
+uv tool install git+https://github.com/edgarrmondragon/tap-bitso.git
 ```
 
 ## Configuration
@@ -51,26 +51,25 @@ tap-bitso --config CONFIG --discover > ./catalog.json
 ### Initialize your Development Environment
 
 ```bash
-pipx install poetry
-poetry install
+uv sync
 ```
 
-<!--
+
 ### Create and Run Tests
 
 Create tests within the `tap_bitso/tests` subfolder and
   then run:
 
 ```bash
-poetry run pytest
+uv run pytest
 ```
 
-You can also test the `tap-bitso` CLI interface directly using `poetry run`:
+You can also test the `tap-bitso` CLI interface directly using `uv run`:
 
 ```bash
-poetry run tap-bitso --help
+uv run tap-bitso --help
 ```
--->
+
 
 ### Testing with [Meltano](https://www.meltano.com)
 
@@ -81,7 +80,7 @@ Next, install Meltano (if you haven't already) and any needed plugins:
 
 ```bash
 # Install meltano
-pipx install meltano
+uv tool install meltano
 # Initialize meltano within this directory
 cd tap-bitso
 meltano install
