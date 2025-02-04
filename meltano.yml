@@ -18,39 +18,35 @@ plugins:
       kind: password
       label: Bitso API Key
       description: Bitso API Key
-      docs: https://bitso.com/api_info?python#generating-api-keys
+      sensitive: true
+      documentation: https://bitso.com/api_info?python#generating-api-keys
     - name: secret
       kind: password
       label: Bitso API Secret
+      sensitive: true
     - name: base_url
       kind: string
       value: https://api.bitso.com
       label: Bitso API base URL
     - name: books
       kind: array
-    select_filter:
-    - "!trades"
     config:
       books:
       - btc_mxn
       - eth_mxn
+    select_filter:
+    - '!trades'
   loaders:
   - name: target-jsonl
     variant: andyh1203
     pip_url: target-jsonl
-
   - name: target-sqlite
     variant: meltano
     config:
       database: output/${MELTANO_EXTRACT__LOAD_SCHEMA}.db
       batch_size: 500
 
-  - name: target-postgres
-    variant: transferwise
-    config:
-      default_target_schema: raw_${MELTANO_EXTRACT__LOAD_SCHEMA}
-      before_run_sql: CREATE SCHEMA IF NOT EXISTS raw_${MELTANO_EXTRACT__LOAD_SCHEMA};
-      max_batch_rows: 10000
-
 environments:
 - name: dev
+venv:
+  backend: uv
