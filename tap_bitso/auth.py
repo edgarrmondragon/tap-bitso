@@ -56,7 +56,7 @@ class BitsoAuthenticator(APIAuthenticatorBase):
         """
         bitso_key: str = self.config["key"]
         bitso_secret: str = self.config["secret"]
-        nonce = str(int(round(time.time() * 1000)))
+        nonce = str(round(time.time() * 1000))
 
         parsed = urlparse(request.url)
         method = request.method or "GET"
