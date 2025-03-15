@@ -37,7 +37,7 @@ dynamic = [
 dependencies = [
   "requests~=2.32.3",
   "singer-sdk~=0.44.2",
-  "stamina~=24.3.0",
+  "stamina~=25.1.0",
   "structlog>=23,<26",
 ]
 urls.Documentation = "https://github.com/edgarrmondragon/tap-bitso#readme"
