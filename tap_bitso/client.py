@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import typing as t
-from typing import Any, Callable
 
 import requests
 import stamina
@@ -14,7 +13,7 @@ from structlog.contextvars import bind_contextvars
 from tap_bitso.auth import BitsoAuthenticator
 
 if t.TYPE_CHECKING:
-    from collections.abc import Generator
+    from collections.abc import Callable, Generator
 
     from singer_sdk.helpers.types import Context, Record
 
@@ -53,7 +52,7 @@ class BitsoStream(RESTStream[str]):
         return self.config["base_url"]  # type: ignore[no-any-return]
 
     @property
-    def http_headers(self) -> dict[str, Any]:
+    def http_headers(self) -> dict[str, t.Any]:
         """Return the http headers needed.
 
         Returns:
@@ -68,7 +67,7 @@ class BitsoStream(RESTStream[str]):
         self,
         context: Context | None,
         next_page_token: str | None,
-    ) -> dict[str, Any]:
+    ) -> dict[str, t.Any]:
         """Return a dictionary of values to be used in URL parameterization.
 
         Args:
@@ -78,7 +77,7 @@ class BitsoStream(RESTStream[str]):
         Returns:
             A mapping of URL query parameters.
         """
-        params: dict[str, Any] = {}
+        params: dict[str, t.Any] = {}
         marker = self.get_starting_replication_key_value(context)
 
         if next_page_token:
