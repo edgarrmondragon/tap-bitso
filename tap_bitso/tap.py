@@ -2,54 +2,17 @@
 
 from __future__ import annotations
 
-import structlog
+import sys
+
 from singer_sdk import Stream, Tap
 from singer_sdk import typing as th
 
 from tap_bitso import streams
 
-structlog.configure(
-    wrapper_class=structlog.stdlib.BoundLogger,
-    logger_factory=structlog.stdlib.LoggerFactory(),
-    processors=[
-        structlog.processors.JSONRenderer(),
-    ],
-)
-
-
-def console_formatter(*, colors: bool = True) -> structlog.stdlib.ProcessorFormatter:
-    """Return a console formatter for structlog.
-
-    Args:
-        colors: Whether to use colors in the console output.
-
-    Returns:
-        A structlog formatter.
-    """
-    return structlog.stdlib.ProcessorFormatter(
-        processor=structlog.dev.ConsoleRenderer(colors=colors),
-        foreign_pre_chain=[
-            structlog.stdlib.add_log_level,
-            structlog.processors.TimeStamper(fmt="iso"),
-        ],
-    )
-
-
-def json_formatter() -> structlog.stdlib.ProcessorFormatter:
-    """Return a JSON formatter for structlog.
-
-    Returns:
-        A structlog formatter.
-    """
-    return structlog.stdlib.ProcessorFormatter(
-        processor=structlog.processors.JSONRenderer(),
-        foreign_pre_chain=[
-            structlog.stdlib.add_logger_name,
-            structlog.stdlib.add_log_level,
-            structlog.processors.TimeStamper(fmt="iso"),
-            structlog.stdlib.PositionalArgumentsFormatter(),
-        ],
-    )
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
 
 
 class TapBitso(Tap):
@@ -86,6 +49,7 @@ class TapBitso(Tap):
         ),
     ).to_dict()
 
+    @override
     def discover_streams(self) -> list[Stream]:
         """Return a list of discovered streams.
 

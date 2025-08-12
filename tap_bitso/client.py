@@ -2,20 +2,28 @@
 
 from __future__ import annotations
 
+import sys
 import typing as t
+from http import HTTPStatus
 
 import requests
+import requests.exceptions
 import stamina
 from singer_sdk.exceptions import RetriableAPIError
 from singer_sdk.streams import RESTStream
-from structlog.contextvars import bind_contextvars
 
 from tap_bitso.auth import BitsoAuthenticator
 
-if t.TYPE_CHECKING:
-    from collections.abc import Callable, Generator
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
 
-    from singer_sdk.helpers.types import Context, Record
+
+if t.TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from singer_sdk.helpers.types import Context
 
 
 class BitsoStream(RESTStream[str]):
@@ -23,26 +31,10 @@ class BitsoStream(RESTStream[str]):
 
     records_jsonpath = "$.payload[*]"
     book_based = False
-    retry_codes = (400,)
-
-    def get_records(
-        self,
-        context: Context | None,
-    ) -> Generator[Record, None, None]:
-        """Return a generator of row-type dictionary objects.
-
-        Each row emitted should be a dictionary of property names to their values.
-
-        Args:
-            context: Stream partition or context dictionary.
-
-        Yields:
-            One item per (possibly processed) record in the API.
-        """
-        bind_contextvars(context=context, stream=self.name)
-        yield from super().get_records(context=context)
+    extra_retry_statuses = (HTTPStatus.BAD_REQUEST,)
 
     @property
+    @override
     def url_base(self) -> str:
         """Get base URL for the Bitso API from config.
 
@@ -51,18 +43,7 @@ class BitsoStream(RESTStream[str]):
         """
         return self.config["base_url"]  # type: ignore[no-any-return]
 
-    @property
-    def http_headers(self) -> dict[str, t.Any]:
-        """Return the http headers needed.
-
-        Returns:
-            A mapping of HTTP headers.
-        """
-        headers = {}
-        if "user_agent" in self.config:
-            headers["User-Agent"] = self.config.get("user_agent")
-        return headers
-
+    @override
     def get_url_params(
         self,
         context: Context | None,
@@ -102,6 +83,7 @@ class BitsoStream(RESTStream[str]):
             return [{"book": book} for book in self.config["books"]]
         return []
 
+    @override
     def request_decorator(self, func: Callable) -> Callable:  # type: ignore[type-arg]
         """Return a decorator for a request function.
 
@@ -128,41 +110,12 @@ class BitsoStream(RESTStream[str]):
             wait_exp_base=1.1,
         )(func)
 
-    def validate_response(self, response: requests.Response) -> None:
-        """Validate HTTP response.
-
-        By default, checks for error status codes (>400) and raises a
-        :class:`singer_sdk.exceptions.FatalAPIError`.
-
-        Tap developers are encouraged to override this method if their APIs use HTTP
-        status codes in non-conventional ways, or if they communicate errors
-        differently (e.g. in the response body).
-
-        .. image:: ../images/200.png
-
-
-        In case an error is deemed transient and can be safely retried, then this
-        method should raise an :class:`singer_sdk.exceptions.RetriableAPIError`.
-
-        Args:
-            response: A `requests.Response`_ object.
-
-        Raises:
-            RetriableAPIError: If the request is retriable.
-
-        .. _requests.Response:
-            https://docs.python-requests.org/en/latest/api/#requests.Response
-        """
-        if response.status_code in self.retry_codes:
-            raise RetriableAPIError(response.reason)
-
-        super().validate_response(response)
-
 
 class AuthenticatedBitsoStream(BitsoStream):
     """Bitso stream class with authentication."""
 
     @property
+    @override
     def authenticator(self) -> BitsoAuthenticator:
         """Return a new authenticator object.
 
