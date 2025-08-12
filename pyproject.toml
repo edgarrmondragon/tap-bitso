@@ -36,9 +36,9 @@ dynamic = [
 ]
 dependencies = [
   "requests~=2.32.3",
-  "singer-sdk~=0.47.0",
+  "singer-sdk~=0.48.0",
   "stamina~=25.1.0",
-  "structlog>=23,<26",
+  "typing-extensions>=4.14.1; python_full_version<'3.12'",
 ]
 urls.Documentation = "https://github.com/edgarrmondragon/tap-bitso#readme"
 urls.Homepage = "https://github.com/edgarrmondragon/tap-bitso"
@@ -47,7 +47,6 @@ scripts."tap-bitso" = "tap_bitso.tap:TapBitso.cli"
 
 [dependency-groups]
 dev = [
-  "colorama>=0.4.4",
   { include-group = "testing" },
   { include-group = "typing" },
 ]
@@ -57,7 +56,8 @@ testing = [
   "singer-sdk[testing]",
 ]
 typing = [
-  "mypy",
+  "mypy>=1.17",
+  "ty>=0.0.1a17",
   "types-requests",
 ]
 
@@ -118,7 +118,10 @@ commands = [ [ "tap-bitso", { replace = "posargs", default = [ "--config=ENV" ],
 
 [tool.tox.env.typing]
 dependency_groups = [ "testing", "typing" ]
-commands = [ [ "mypy", "--strict", { replace = "posargs", default = [ "tap_bitso", "tests" ], extend = true } ] ]
+commands = [
+  [ "mypy", "--strict", { replace = "posargs", default = [ "tap_bitso", "tests" ], extend = true } ],
+  [ "ty", "check", { replace = "posargs", default = [ "tap_bitso", "tests" ], extend = true } ],
+]
 
 [tool.mypy]
 enable_error_code = [
