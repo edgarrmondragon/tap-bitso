@@ -36,7 +36,7 @@ dynamic = [
 ]
 dependencies = [
   "requests~=2.32.3",
-  "singer-sdk~=0.47.0",
+  "singer-sdk~=0.48.0",
   "stamina~=25.1.0",
   "structlog>=23,<26",
 ]
