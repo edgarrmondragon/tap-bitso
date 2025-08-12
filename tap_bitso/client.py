@@ -19,7 +19,6 @@ if sys.version_info >= (3, 12):
 else:
     from typing_extensions import override
 
-
 if t.TYPE_CHECKING:
     from collections.abc import Callable
 
@@ -84,7 +83,10 @@ class BitsoStream(RESTStream[str]):
         return []
 
     @override
-    def request_decorator(self, func: Callable) -> Callable:  # type: ignore[type-arg]
+    def request_decorator(
+        self,
+        func: Callable[[requests.PreparedRequest, Context | None], requests.Response],
+    ) -> Callable[[requests.PreparedRequest, Context | None], requests.Response]:
         """Return a decorator for a request function.
 
         Args:
